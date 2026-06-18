@@ -11,25 +11,25 @@ const sampleLibrary = [
   MagazineVolume(
     year: 2026,
     number: 12,
-    title: 'The Light of Knowledge',
-    subtitle: 'Ideas that illuminate everyday life',
+    title: 'Apostolic Roots',
+    subtitle: 'The beginnings of the Jacobite Syrian Christian tradition',
     description:
-        'Essays on learning, culture, science, and the enduring habit of wonder.',
+        'Historical reflections on apostolic memory, early communities, and the roots of faith in Malankara.',
     readingMinutes: 42,
     chapters: [
       MagazineChapter(
         kicker: 'Chapter 1',
-        title: 'The Light of Knowledge',
+        title: 'The Apostolic Inheritance',
         paragraphs: _paragraphs,
       ),
       MagazineChapter(
         kicker: 'Chapter 2',
-        title: 'Learning Across Generations',
+        title: 'From Antioch to Malankara',
         paragraphs: _paragraphs,
       ),
       MagazineChapter(
         kicker: 'Chapter 3',
-        title: 'The Patient Observer',
+        title: 'A Living Tradition',
         paragraphs: _paragraphs,
       ),
     ],
@@ -37,20 +37,20 @@ const sampleLibrary = [
   MagazineVolume(
     year: 2026,
     number: 11,
-    title: 'Living Traditions',
-    subtitle: 'Memory, craft, and community',
+    title: 'The Syriac Heritage',
+    subtitle: 'Language, liturgy, manuscripts, and sacred memory',
     description:
-        'Stories about the knowledge held in language, ritual, work, and place.',
+        'An introduction to West Syriac worship, literature, music, and the spiritual vocabulary of the Church.',
     readingMinutes: 36,
     chapters: [
       MagazineChapter(
         kicker: 'Chapter 1',
-        title: 'What a Community Remembers',
+        title: 'The Language of Prayer',
         paragraphs: _paragraphs,
       ),
       MagazineChapter(
         kicker: 'Chapter 2',
-        title: 'Hands That Keep a Craft Alive',
+        title: 'Manuscripts and Memory',
         paragraphs: _paragraphs,
       ),
     ],
@@ -58,20 +58,20 @@ const sampleLibrary = [
   MagazineVolume(
     year: 2025,
     number: 10,
-    title: 'Science and Society',
-    subtitle: 'Discovery in the public imagination',
+    title: 'Churches of Malankara',
+    subtitle: 'Sacred places and the communities that shaped them',
     description:
-        'A thoughtful annual collection on evidence, invention, and responsibility.',
+        'A historical journey through churches, stone crosses, architecture, and parish life in Kerala.',
     readingMinutes: 48,
     chapters: [
       MagazineChapter(
         kicker: 'Chapter 1',
-        title: 'The Courage to Ask',
+        title: 'Houses of Worship',
         paragraphs: _paragraphs,
       ),
       MagazineChapter(
         kicker: 'Chapter 2',
-        title: 'Evidence and Empathy',
+        title: 'Parishes Through Time',
         paragraphs: _paragraphs,
       ),
     ],
@@ -79,20 +79,20 @@ const sampleLibrary = [
   MagazineVolume(
     year: 2024,
     number: 9,
-    title: 'Earth, Water, Home',
-    subtitle: 'Notes on ecology and belonging',
+    title: 'Faith Through the Centuries',
+    subtitle: 'Witness, leadership, and community across generations',
     description:
-        'Writers and researchers consider our relationship with the natural world.',
+        'Stories of endurance, ecclesial leadership, migration, education, and service across the centuries.',
     readingMinutes: 39,
     chapters: [
       MagazineChapter(
         kicker: 'Chapter 1',
-        title: 'Reading the Landscape',
+        title: 'A History of Witness',
         paragraphs: _paragraphs,
       ),
       MagazineChapter(
         kicker: 'Chapter 2',
-        title: 'A River Has a Memory',
+        title: 'Faith in a Changing World',
         paragraphs: _paragraphs,
       ),
     ],
