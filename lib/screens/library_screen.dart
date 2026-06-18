@@ -450,35 +450,64 @@ class _VolumeTile extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                         Positioned(
-                          left: 8,
-                          right: 8,
-                          top: 8,
+                          left: 5,
+                          right: 5,
+                          top: 13,
                           child: Container(
-                            padding: const EdgeInsets.fromLTRB(6, 6, 6, 7),
-                            color: const Color(0xC916120B),
+                            padding: const EdgeInsets.fromLTRB(7, 6, 7, 7),
+                            decoration: BoxDecoration(
+                              color: const Color(0xEDF4EFE2),
+                              border: Border.all(
+                                color: const Color(0xFF332A1C),
+                                width: .8,
+                              ),
+                            ),
                             child: Column(
                               children: [
+                                const _LampMark(),
+                                const SizedBox(height: 1),
                                 const Text(
                                   'വിക്ഞാനദീപം',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Color(0xFFF2D58B),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF17130E),
+                                    fontSize: 12.5,
+                                    height: 1,
+                                    fontWeight: FontWeight.w900,
                                   ),
                                 ),
-                                const SizedBox(height: 2),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  'യാക്കോബായ സുറിയാനി ക്രിസ്ത്യൻ ചരിത്ര മാസിക',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Color(0xFF493E30),
+                                    fontSize: 6.2,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Container(
+                                  width: double.infinity,
+                                  height: 1,
+                                  color: const Color(0xFF3A3023),
+                                ),
+                                const SizedBox(height: 4),
                                 Text(
                                   volume.title.toUpperCase(),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 9,
-                                    height: 1.15,
-                                    letterSpacing: .6,
-                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF17130E),
+                                    fontSize: 8,
+                                    height: 1.12,
+                                    letterSpacing: .45,
+                                    fontWeight: FontWeight.w800,
                                   ),
                                 ),
                               ],
@@ -663,6 +692,55 @@ class _BottomNavigation extends StatelessWidget {
             }),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _LampMark extends StatelessWidget {
+  const _LampMark();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 25,
+      height: 31,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          const Positioned(
+            top: 0,
+            child: Icon(
+              Icons.local_fire_department_rounded,
+              size: 15,
+              color: Color(0xFF17130E),
+            ),
+          ),
+          Positioned(
+            bottom: 3,
+            child: Container(
+              width: 18,
+              height: 8,
+              decoration: const BoxDecoration(
+                color: Color(0xFF17130E),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(9),
+                  bottomRight: Radius.circular(9),
+                  topLeft: Radius.circular(2),
+                  topRight: Radius.circular(2),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              width: 24,
+              height: 2,
+              color: const Color(0xFF17130E),
+            ),
+          ),
+        ],
       ),
     );
   }
