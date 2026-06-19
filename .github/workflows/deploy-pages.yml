@@ -31,11 +31,17 @@ jobs:
         run: flutter pub get
 
       - name: Build web app
-        run: >-
-          flutter build web --release
-          --base-href /viknjanadeepam/
-          --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-          --dart-define=SUPABASE_PUBLISHABLE_KEY=${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        shell: bash
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          args=(--release --base-href /viknjanadeepam/)
+          if [[ -n "$SUPABASE_URL" && -n "$SUPABASE_PUBLISHABLE_KEY" ]]; then
+            args+=(--dart-define="SUPABASE_URL=$SUPABASE_URL")
+            args+=(--dart-define="SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY")
+          fi
+          flutter build web "${args[@]}"
 
       - name: Add admin route entry point
         shell: bash

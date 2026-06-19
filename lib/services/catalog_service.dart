@@ -7,8 +7,13 @@ class CatalogService {
   static const publishableKey =
       String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
 
-  static bool get isConfigured =>
-      supabaseUrl.isNotEmpty && publishableKey.isNotEmpty;
+  static bool get isConfigured {
+    final uri = Uri.tryParse(supabaseUrl);
+    return uri != null &&
+        uri.scheme == 'https' &&
+        uri.host.endsWith('.supabase.co') &&
+        publishableKey.length > 20;
+  }
 
   static SupabaseClient get client => Supabase.instance.client;
 
