@@ -21,9 +21,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   int _selectedNavigation = 1;
   int? _selectedYear;
   final _catalogService = CatalogService();
-  final _sourceController = TextEditingController();
   late List<MagazineVolume> _volumes;
-  bool _isSyncing = false;
 
   List<int> get _years => _volumes.map((volume) => volume.year).toSet().toList()
     ..sort((a, b) => b.compareTo(a));
@@ -38,20 +36,22 @@ class _LibraryScreenState extends State<LibraryScreen> {
   void initState() {
     super.initState();
     _volumes = List.of(sampleLibrary);
-    _loadSavedSource();
+    _syncPublishedVolumes();
   }
 
-  Future<void> _loadSavedSource() async {
-    final source = await _catalogService.loadSavedSource();
-    if (source != null && mounted) {
-      _sourceController.text = source;
+  Future<void> _syncPublishedVolumes() async {
+    if (!CatalogService.isConfigured) return;
+    try {
+      final remoteVolumes = await _catalogService.fetchPublishedVolumes();
+      if (remoteVolumes.isNotEmpty && mounted) {
+        setState(() {
+          _volumes = remoteVolumes;
+          _selectedYear = null;
+        });
+      }
+    } catch (_) {
+      // Keep the bundled catalog available when the network is unavailable.
     }
-  }
-
-  @override
-  void dispose() {
-    _sourceController.dispose();
-    super.dispose();
   }
 
   @override
@@ -121,26 +121,29 @@ class _LibraryScreenState extends State<LibraryScreen> {
             ),
             Container(height: 1, color: Colors.white.withValues(alpha: .08)),
             Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.fromLTRB(11, 14, 11, 118),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 14,
-                  crossAxisSpacing: 14,
-                  childAspectRatio: .68,
-                ),
-                itemCount: _visibleVolumes.length,
-                itemBuilder: (context, index) {
-                  final volume = _visibleVolumes[index];
-                  return _VolumeTile(
-                    volume: volume,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => ReaderScreen(volume: volume),
+              child: RefreshIndicator(
+                onRefresh: _syncPublishedVolumes,
+                child: GridView.builder(
+                  padding: const EdgeInsets.fromLTRB(11, 14, 11, 118),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 14,
+                    crossAxisSpacing: 14,
+                    childAspectRatio: .68,
+                  ),
+                  itemCount: _visibleVolumes.length,
+                  itemBuilder: (context, index) {
+                    final volume = _visibleVolumes[index];
+                    return _VolumeTile(
+                      volume: volume,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => ReaderScreen(volume: volume),
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -150,9 +153,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
         selectedIndex: _selectedNavigation,
         onSelected: (index) {
           setState(() => _selectedNavigation = index);
-          if (index == 4) {
-            _showCatalogSource();
-          } else if (index == 3) {
+          if (index == 3) {
             showSearch<void>(
               context: context,
               delegate: _VolumeSearchDelegate(_volumes),
@@ -166,142 +167,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
             );
           }
         },
-      ),
-    );
-  }
-
-  void _showCatalogSource() {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: _surface,
-      showDragHandle: true,
-      builder: (sheetContext) => StatefulBuilder(
-        builder: (context, setSheetState) => Padding(
-          padding: EdgeInsets.fromLTRB(
-            20,
-            4,
-            20,
-            MediaQuery.viewInsetsOf(context).bottom + 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Update Library',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Paste a public JSON catalog URL. The server must allow browser access (CORS).',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: .62),
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 18),
-              TextField(
-                controller: _sourceController,
-                keyboardType: TextInputType.url,
-                autocorrect: false,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Catalog JSON URL',
-                  labelStyle:
-                      TextStyle(color: Colors.white.withValues(alpha: .58)),
-                  hintText: 'https://example.com/volumes.json',
-                  hintStyle:
-                      TextStyle(color: Colors.white.withValues(alpha: .3)),
-                  filled: true,
-                  fillColor: _background,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: FilledButton.icon(
-                  onPressed: _isSyncing
-                      ? null
-                      : () async {
-                          setSheetState(() => _isSyncing = true);
-                          try {
-                            final source = _sourceController.text.trim();
-                            final updated =
-                                await _catalogService.fetchCatalog(source);
-                            await _catalogService.saveSource(source);
-                            if (!mounted) return;
-                            setState(() {
-                              _volumes = updated;
-                              _selectedYear = null;
-                              _selectedTab = 0;
-                              _selectedNavigation = 1;
-                              _isSyncing = false;
-                            });
-                            setSheetState(() {});
-                            if (sheetContext.mounted) {
-                              Navigator.pop(sheetContext);
-                            }
-                            ScaffoldMessenger.of(this.context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  '${updated.length} volumes updated.',
-                                ),
-                              ),
-                            );
-                          } catch (error) {
-                            if (mounted) {
-                              setState(() => _isSyncing = false);
-                            }
-                            setSheetState(() {});
-                            if (!sheetContext.mounted) return;
-                            ScaffoldMessenger.of(sheetContext).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  error.toString().replaceFirst(
-                                        'Exception: ',
-                                        '',
-                                      ),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                  icon: _isSyncing
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.sync_rounded),
-                  label: Text(_isSyncing ? 'Updating…' : 'Update books'),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextButton.icon(
-                onPressed: () {
-                  setState(() {
-                    _volumes = List.of(sampleLibrary);
-                    _selectedYear = null;
-                    _selectedNavigation = 1;
-                  });
-                  Navigator.pop(sheetContext);
-                },
-                icon: const Icon(Icons.restore_rounded),
-                label: const Text('Use built-in catalog'),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

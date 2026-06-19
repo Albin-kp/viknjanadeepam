@@ -31,7 +31,17 @@ jobs:
         run: flutter pub get
 
       - name: Build web app
-        run: flutter build web --release --base-href /viknjanadeepam/
+        run: >-
+          flutter build web --release
+          --base-href /viknjanadeepam/
+          --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          --dart-define=SUPABASE_PUBLISHABLE_KEY=${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+
+      - name: Add admin route entry point
+        shell: bash
+        run: |
+          mkdir -p build/web/admin
+          cp build/web/index.html build/web/admin/index.html
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

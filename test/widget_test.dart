@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vijnanadeepam/main.dart';
+import 'package:vijnanadeepam/screens/admin/admin_screen.dart';
 
 void main() {
   testWidgets('opens a volume and displays the reader', (tester) async {
@@ -15,5 +16,13 @@ void main() {
 
     expect(find.text('Apostolic Roots'), findsWidgets);
     expect(find.text('CHAPTER 1'), findsOneWidget);
+  });
+
+  testWidgets('admin route has a safe unconfigured state', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: AdminScreen()),
+    );
+
+    expect(find.text('Admin setup required'), findsOneWidget);
   });
 }

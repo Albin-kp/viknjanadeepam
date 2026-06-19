@@ -1,58 +1,79 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/magazine_volume.dart';
 
 class CatalogService {
-  static const _sourceKey = 'catalog_source_url';
+  static const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+  static const publishableKey =
+      String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
 
-  Future<String?> loadSavedSource() async {
-    final preferences = await SharedPreferences.getInstance();
-    return preferences.getString(_sourceKey);
+  static bool get isConfigured =>
+      supabaseUrl.isNotEmpty && publishableKey.isNotEmpty;
+
+  static SupabaseClient get client => Supabase.instance.client;
+
+  static Future<void> initialize() async {
+    if (!isConfigured) return;
+    await Supabase.initialize(
+      url: supabaseUrl,
+      publishableKey: publishableKey,
+    );
   }
 
-  Future<void> saveSource(String url) async {
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_sourceKey, url);
+  Future<List<MagazineVolume>> fetchPublishedVolumes() async {
+    if (!isConfigured) return const [];
+    final rows = await client
+        .from('magazine_volumes')
+        .select()
+        .eq('published', true)
+        .order('year', ascending: false)
+        .order('volume_number', ascending: false);
+    return rows.map(MagazineVolume.fromJson).toList();
   }
 
-  Future<List<MagazineVolume>> fetchCatalog(String url) async {
-    final uri = Uri.tryParse(url);
-    if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
-      throw const FormatException('Enter a valid public JSON URL.');
-    }
-
-    final response = await http.get(uri);
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw Exception('The source returned HTTP ${response.statusCode}.');
-    }
-
-    final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-    final rawVolumes = decoded is List<dynamic>
-        ? decoded
-        : (decoded as Map<String, dynamic>)['volumes'] as List<dynamic>?;
-
-    if (rawVolumes == null || rawVolumes.isEmpty) {
-      throw const FormatException('No volumes were found in this catalog.');
-    }
-
-    final volumes = rawVolumes
-        .map(
-          (volume) => MagazineVolume.fromJson(volume as Map<String, dynamic>),
-        )
-        .toList()
-      ..sort((a, b) {
-        final yearOrder = b.year.compareTo(a.year);
-        return yearOrder == 0 ? b.number.compareTo(a.number) : yearOrder;
-      });
-
-    if (volumes.any((volume) => volume.chapters.isEmpty)) {
-      throw const FormatException(
-        'Every volume must include at least one chapter.',
-      );
-    }
-    return volumes;
+  Future<List<MagazineVolume>> fetchAdminVolumes() async {
+    final rows = await client
+        .from('magazine_volumes')
+        .select()
+        .order('year', ascending: false)
+        .order('volume_number', ascending: false);
+    return rows.map(MagazineVolume.fromJson).toList();
   }
+
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
+    await client.auth.signInWithPassword(email: email, password: password);
+  }
+
+  Future<void> signOut() => client.auth.signOut();
+
+  bool get isSignedIn =>
+      isConfigured && client.auth.currentSession?.user != null;
+
+  String? get currentEmail => client.auth.currentUser?.email;
+
+  Future<MagazineVolume> saveVolume(MagazineVolume volume) async {
+    final payload = volume.toJson()..remove('id');
+    final Map<String, dynamic> row;
+    if (volume.id == null) {
+      row = await client
+          .from('magazine_volumes')
+          .insert(payload)
+          .select()
+          .single();
+    } else {
+      row = await client
+          .from('magazine_volumes')
+          .update(payload)
+          .eq('id', volume.id!)
+          .select()
+          .single();
+    }
+    return MagazineVolume.fromJson(row);
+  }
+
+  Future<void> deleteVolume(String id) =>
+      client.from('magazine_volumes').delete().eq('id', id);
 }
