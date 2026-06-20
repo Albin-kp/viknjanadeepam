@@ -324,27 +324,42 @@ class _VolumeTile extends StatelessWidget {
                             color: Colors.transparent,
                             child: Column(
                               children: [
-                                const _LampMark(),
-                                const SizedBox(height: 3),
-                                const Text(
-                                  'വിക്ഞാനദീപം',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.clip,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color(0xFF17130E),
-                                    fontSize: 12.5,
-                                    height: 1,
-                                    fontWeight: FontWeight.w900,
-                                    shadows: [
-                                      Shadow(
-                                        color: Color(0xCCF4E7C5),
-                                        blurRadius: 4,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(3),
+                                      child: Image.asset(
+                                        'assets/images/vijnanadeepam-logo.png',
+                                        width: 29,
+                                        height: 29,
+                                        fit: BoxFit.cover,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    const Flexible(
+                                      child: Text(
+                                        'വിക്ഞാനദീപം',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.clip,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Color(0xFF17130E),
+                                          fontSize: 12.8,
+                                          height: 1,
+                                          fontWeight: FontWeight.w900,
+                                          shadows: [
+                                            Shadow(
+                                              color: Color(0xCCF4E7C5),
+                                              blurRadius: 4,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 3),
                                 const Text(
                                   'യാക്കോബായ സുറിയാനി ക്രിസ്ത്യൻ ചരിത്ര മാസിക',
                                   maxLines: 1,
@@ -370,16 +385,16 @@ class _VolumeTile extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  volume.title.toUpperCase(),
-                                  maxLines: 2,
+                                  volume.title,
+                                  maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: Color(0xFF17130E),
-                                    fontSize: 8,
-                                    height: 1.12,
-                                    letterSpacing: .45,
-                                    fontWeight: FontWeight.w800,
+                                    fontSize: 11,
+                                    height: 1.08,
+                                    letterSpacing: .1,
+                                    fontWeight: FontWeight.w900,
                                     shadows: [
                                       Shadow(
                                         color: Color(0xDDF4E7C5),
@@ -570,89 +585,6 @@ class _BottomNavigation extends StatelessWidget {
             }),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _LampMark extends StatelessWidget {
-  const _LampMark();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 31,
-      height: 38,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned(
-            top: 0,
-            child: SizedBox(
-              width: 15,
-              height: 14,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    width: 3,
-                    height: 14,
-                    color: const Color(0xFFDDB557),
-                  ),
-                  Container(
-                    width: 13,
-                    height: 3,
-                    color: const Color(0xFFDDB557),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 11,
-            child: Transform.scale(
-              scaleX: .8,
-              child: const Icon(
-                Icons.local_fire_department_rounded,
-                size: 18,
-                color: Color(0xFFDDB557),
-                shadows: [
-                  Shadow(color: Color(0x993A2910), blurRadius: 2),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 4,
-            child: Container(
-              width: 23,
-              height: 9,
-              decoration: const BoxDecoration(
-                color: Color(0xFFDDB557),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
-                  topLeft: Radius.circular(3),
-                  topRight: Radius.circular(3),
-                ),
-                boxShadow: [
-                  BoxShadow(color: Color(0x993A2910), blurRadius: 2),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              width: 29,
-              height: 3,
-              decoration: BoxDecoration(
-                color: const Color(0xFFDDB557),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

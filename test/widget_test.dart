@@ -7,7 +7,7 @@ void main() {
     await tester.pumpWidget(const VijnanaDeepamApp());
 
     expect(find.byKey(const Key('app-heading')), findsOneWidget);
-    expect(find.text('Apostolic Roots'), findsOneWidget);
+    expect(find.text('Apostolic Roots'), findsWidgets);
 
     await tester.ensureVisible(find.byKey(const Key('volume-12')));
     await tester.tap(find.byKey(const Key('volume-12')));
