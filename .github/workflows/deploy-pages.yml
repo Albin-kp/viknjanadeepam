@@ -36,7 +36,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
         run: |
-          args=(--release --base-href /viknjanadeepam/)
+          args=(--release --base-href /viknjanadeepam/ --pwa-strategy=none)
           if [[ -n "$SUPABASE_URL" && -n "$SUPABASE_PUBLISHABLE_KEY" ]]; then
             args+=(--dart-define="SUPABASE_URL=$SUPABASE_URL")
             args+=(--dart-define="SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY")
