@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../data/sample_library.dart';
@@ -48,7 +49,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
           _selectedYear = null;
         });
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
+      debugPrint('Could not load magazine catalogue: $error');
+      debugPrintStack(stackTrace: stackTrace);
       // Keep the bundled catalog available when the network is unavailable.
     }
   }
