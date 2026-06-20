@@ -321,17 +321,11 @@ class _VolumeTile extends StatelessWidget {
                           top: 13,
                           child: Container(
                             padding: const EdgeInsets.fromLTRB(7, 6, 7, 7),
-                            decoration: BoxDecoration(
-                              color: const Color(0xEDF4EFE2),
-                              border: Border.all(
-                                color: const Color(0xFF332A1C),
-                                width: .8,
-                              ),
-                            ),
+                            color: Colors.transparent,
                             child: Column(
                               children: [
                                 const _LampMark(),
-                                const SizedBox(height: 1),
+                                const SizedBox(height: 3),
                                 const Text(
                                   'വിക്ഞാനദീപം',
                                   maxLines: 1,
@@ -342,6 +336,12 @@ class _VolumeTile extends StatelessWidget {
                                     fontSize: 12.5,
                                     height: 1,
                                     fontWeight: FontWeight.w900,
+                                    shadows: [
+                                      Shadow(
+                                        color: Color(0xCCF4E7C5),
+                                        blurRadius: 4,
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -354,6 +354,12 @@ class _VolumeTile extends StatelessWidget {
                                     color: Color(0xFF493E30),
                                     fontSize: 6.2,
                                     fontWeight: FontWeight.w700,
+                                    shadows: [
+                                      Shadow(
+                                        color: Color(0xDDF4E7C5),
+                                        blurRadius: 3,
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(height: 5),
@@ -374,6 +380,12 @@ class _VolumeTile extends StatelessWidget {
                                     height: 1.12,
                                     letterSpacing: .45,
                                     fontWeight: FontWeight.w800,
+                                    shadows: [
+                                      Shadow(
+                                        color: Color(0xDDF4E7C5),
+                                        blurRadius: 4,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -569,41 +581,75 @@ class _LampMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 25,
-      height: 31,
+      width: 31,
+      height: 38,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          const Positioned(
+          Positioned(
             top: 0,
-            child: Icon(
-              Icons.local_fire_department_rounded,
-              size: 15,
-              color: Color(0xFF17130E),
+            child: SizedBox(
+              width: 15,
+              height: 14,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 3,
+                    height: 14,
+                    color: const Color(0xFFDDB557),
+                  ),
+                  Container(
+                    width: 13,
+                    height: 3,
+                    color: const Color(0xFFDDB557),
+                  ),
+                ],
+              ),
             ),
           ),
           Positioned(
-            bottom: 3,
+            top: 11,
+            child: Transform.scale(
+              scaleX: .8,
+              child: const Icon(
+                Icons.local_fire_department_rounded,
+                size: 18,
+                color: Color(0xFFDDB557),
+                shadows: [
+                  Shadow(color: Color(0x993A2910), blurRadius: 2),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 4,
             child: Container(
-              width: 18,
-              height: 8,
+              width: 23,
+              height: 9,
               decoration: const BoxDecoration(
-                color: Color(0xFF17130E),
+                color: Color(0xFFDDB557),
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(9),
-                  bottomRight: Radius.circular(9),
-                  topLeft: Radius.circular(2),
-                  topRight: Radius.circular(2),
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                  topLeft: Radius.circular(3),
+                  topRight: Radius.circular(3),
                 ),
+                boxShadow: [
+                  BoxShadow(color: Color(0x993A2910), blurRadius: 2),
+                ],
               ),
             ),
           ),
           Positioned(
             bottom: 0,
             child: Container(
-              width: 24,
-              height: 2,
-              color: const Color(0xFF17130E),
+              width: 29,
+              height: 3,
+              decoration: BoxDecoration(
+                color: const Color(0xFFDDB557),
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
           ),
         ],
