@@ -36,16 +36,15 @@ class _LibraryScreenState extends State<LibraryScreen> {
   void initState() {
     super.initState();
     _volumes = List.of(sampleLibrary);
-    _syncPublishedVolumes();
+    _loadCatalog();
   }
 
-  Future<void> _syncPublishedVolumes() async {
-    if (!CatalogService.isConfigured) return;
+  Future<void> _loadCatalog() async {
     try {
-      final remoteVolumes = await _catalogService.fetchPublishedVolumes();
-      if (remoteVolumes.isNotEmpty && mounted) {
+      final catalogVolumes = await _catalogService.loadVolumes();
+      if (catalogVolumes.isNotEmpty && mounted) {
         setState(() {
-          _volumes = remoteVolumes;
+          _volumes = catalogVolumes;
           _selectedYear = null;
         });
       }
@@ -122,7 +121,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
             Container(height: 1, color: Colors.white.withValues(alpha: .08)),
             Expanded(
               child: RefreshIndicator(
-                onRefresh: _syncPublishedVolumes,
+                onRefresh: _loadCatalog,
                 child: GridView.builder(
                   padding: const EdgeInsets.fromLTRB(11, 14, 11, 118),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

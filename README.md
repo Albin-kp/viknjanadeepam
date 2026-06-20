@@ -12,7 +12,7 @@ magazine.
 - A common St. Mary's Cathedral, Morrakkala sketch cover with data-driven
   titles, years, and volume numbers
 - A private `/admin/` page for editing Malayalam magazine content
-- Silent synchronization of published volumes in the public reader
+- A simple JSON catalogue bundled directly with the public reader
 
 ## Administration
 
@@ -20,19 +20,26 @@ The administration page is available at:
 
 `https://albin-kp.github.io/viknjanadeepam/admin/`
 
-It supports secure sign-in, drafts, publishing, deleting, and structured
-Malayalam chapter content. Public readers never see administration or update
-controls.
+It supports a static password login, structured Malayalam chapter editing,
+deleting, backups, and publishing. Public readers never see administration or
+update controls.
 
-### Supabase setup
+### Publishing from the admin
 
-1. Create a Supabase project.
-2. Run [`supabase/schema.sql`](supabase/schema.sql) in the SQL editor.
-3. Create the administrator under Authentication → Users.
-4. Insert that user's UUID into `public.admin_users` using the final statement
-   documented in the schema.
-5. Add `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` as GitHub Actions
-   repository secrets.
+1. Sign in with the admin password.
+2. Add or edit volumes and chapters.
+3. Enter a fine-grained GitHub token with `Contents: Read and write` access to
+   this repository.
+4. Select **Publish to app**.
+
+The editor commits [`assets/data/catalog.json`](assets/data/catalog.json) to
+the repository. GitHub Pages then rebuilds the reader automatically. The token
+is kept only in the current browser tab.
+
+The default admin password is `VijnanaDeepam@2026`. Set the GitHub Actions
+repository secret `ADMIN_PASSWORD` to replace it. Because the admin page is a
+static site, this password is a convenience lock rather than strong security;
+the GitHub token remains the actual publishing authorization.
 
 ## Run locally
 
