@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'screens/admin/admin_screen.dart';
 import 'screens/library_screen.dart';
-import 'services/catalog_service.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await CatalogService.initialize();
+void main() {
   runApp(const VijnanaDeepamApp());
 }
 
@@ -54,10 +50,7 @@ class VijnanaDeepamApp extends StatelessWidget {
           bodyMedium: TextStyle(fontSize: 14, height: 1.45, color: ink),
         ),
       ),
-      home: Uri.base.path.contains('/admin') ||
-              Uri.base.queryParameters['admin'] == '1'
-          ? const AdminScreen()
-          : const LibraryScreen(),
+      home: const LibraryScreen(),
     );
   }
 }
