@@ -47,7 +47,19 @@ jobs:
         shell: bash
         run: |
           mkdir -p build/web/admin
-          cp build/web/index.html build/web/admin/index.html
+          cat > build/web/admin/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <meta http-equiv="refresh" content="0; url=../?admin=1">
+              <title>Vijnana Deepam Admin</title>
+              <script>location.replace('../?admin=1');</script>
+            </head>
+            <body></body>
+          </html>
+          HTML
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

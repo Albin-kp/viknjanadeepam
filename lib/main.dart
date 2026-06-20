@@ -54,7 +54,8 @@ class VijnanaDeepamApp extends StatelessWidget {
           bodyMedium: TextStyle(fontSize: 14, height: 1.45, color: ink),
         ),
       ),
-      home: Uri.base.path.contains('/admin')
+      home: Uri.base.path.contains('/admin') ||
+              Uri.base.queryParameters['admin'] == '1'
           ? const AdminScreen()
           : const LibraryScreen(),
     );
