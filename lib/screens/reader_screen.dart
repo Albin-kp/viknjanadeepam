@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../main.dart';
 import '../models/magazine_volume.dart';
+import '../services/bookmark_service.dart';
 
 class ReaderScreen extends StatefulWidget {
   const ReaderScreen({super.key, required this.volume});
@@ -17,7 +18,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
   final _chapterKeys = <GlobalKey>[];
   double _progress = 0;
   double _fontSize = 18;
-  bool _bookmarked = false;
+  final _bookmarkService = BookmarkService.instance;
+
+  bool get _bookmarked => _bookmarkService.contains(widget.volume);
 
   @override
   void initState() {
@@ -26,6 +29,13 @@ class _ReaderScreenState extends State<ReaderScreen> {
       List.generate(widget.volume.chapters.length, (_) => GlobalKey()),
     );
     _scrollController.addListener(_updateProgress);
+    _bookmarkService
+      ..addListener(_refreshBookmark)
+      ..load();
+  }
+
+  void _refreshBookmark() {
+    if (mounted) setState(() {});
   }
 
   void _updateProgress() {
@@ -41,6 +51,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     _scrollController
       ..removeListener(_updateProgress)
       ..dispose();
+    _bookmarkService.removeListener(_refreshBookmark);
     super.dispose();
   }
 
@@ -79,7 +90,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
           ),
           IconButton(
             tooltip: _bookmarked ? 'Remove bookmark' : 'Bookmark',
-            onPressed: () => setState(() => _bookmarked = !_bookmarked),
+            onPressed: () => _bookmarkService.toggle(widget.volume),
             icon: Icon(
               _bookmarked
                   ? Icons.bookmark_rounded

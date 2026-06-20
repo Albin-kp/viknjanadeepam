@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/sample_library.dart';
 import '../models/magazine_volume.dart';
+import '../services/bookmark_service.dart';
 import '../services/catalog_service.dart';
 import 'reader_screen.dart';
 
@@ -18,16 +19,19 @@ class _LibraryScreenState extends State<LibraryScreen> {
   static const _accent = Color(0xFF1495E6);
 
   int _selectedTab = 0;
-  int _selectedNavigation = 1;
+  int _selectedNavigation = 0;
   int? _selectedYear;
   final _catalogService = CatalogService();
+  final _bookmarkService = BookmarkService.instance;
   late List<MagazineVolume> _volumes;
 
   List<int> get _years => _volumes.map((volume) => volume.year).toSet().toList()
     ..sort((a, b) => b.compareTo(a));
 
   List<MagazineVolume> get _visibleVolumes {
-    if (_selectedTab == 1) return _volumes.take(2).toList();
+    if (_selectedTab == 1 || _selectedNavigation == 1) {
+      return _volumes.where(_bookmarkService.contains).toList();
+    }
     if (_selectedYear == null) return _volumes;
     return _volumes.where((volume) => volume.year == _selectedYear).toList();
   }
@@ -36,7 +40,20 @@ class _LibraryScreenState extends State<LibraryScreen> {
   void initState() {
     super.initState();
     _volumes = List.of(sampleLibrary);
+    _bookmarkService
+      ..addListener(_refreshBookmarks)
+      ..load();
     _loadCatalog();
+  }
+
+  void _refreshBookmarks() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _bookmarkService.removeListener(_refreshBookmarks);
+    super.dispose();
   }
 
   Future<void> _loadCatalog() async {
@@ -111,41 +128,51 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       ? 'All Volumes'
                       : '${_selectedYear!}',
                   selected: _selectedTab == 0,
-                  onTap: () => setState(() => _selectedTab = 0),
+                  onTap: () => setState(() {
+                    _selectedTab = 0;
+                    _selectedNavigation = 0;
+                  }),
                 ),
                 _LibraryTab(
-                  label: 'My Library',
+                  label: 'Bookmarks',
                   selected: _selectedTab == 1,
-                  onTap: () => setState(() => _selectedTab = 1),
+                  onTap: () => setState(() {
+                    _selectedTab = 1;
+                    _selectedNavigation = 1;
+                  }),
                 ),
               ],
             ),
             Container(height: 1, color: Colors.white.withValues(alpha: .08)),
             Expanded(
-              child: RefreshIndicator(
-                onRefresh: _loadCatalog,
-                child: GridView.builder(
-                  padding: const EdgeInsets.fromLTRB(11, 14, 11, 118),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 14,
-                    crossAxisSpacing: 14,
-                    childAspectRatio: .68,
-                  ),
-                  itemCount: _visibleVolumes.length,
-                  itemBuilder: (context, index) {
-                    final volume = _visibleVolumes[index];
-                    return _VolumeTile(
-                      volume: volume,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => ReaderScreen(volume: volume),
+              child: _visibleVolumes.isEmpty &&
+                      (_selectedTab == 1 || _selectedNavigation == 1)
+                  ? const _EmptyBookmarks()
+                  : RefreshIndicator(
+                      onRefresh: _loadCatalog,
+                      child: GridView.builder(
+                        padding: const EdgeInsets.fromLTRB(11, 14, 11, 118),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 14,
+                          crossAxisSpacing: 14,
+                          childAspectRatio: .68,
                         ),
+                        itemCount: _visibleVolumes.length,
+                        itemBuilder: (context, index) {
+                          final volume = _visibleVolumes[index];
+                          return _VolumeTile(
+                            volume: volume,
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => ReaderScreen(volume: volume),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ),
+                    ),
             ),
           ],
         ),
@@ -153,20 +180,17 @@ class _LibraryScreenState extends State<LibraryScreen> {
       bottomNavigationBar: _BottomNavigation(
         selectedIndex: _selectedNavigation,
         onSelected: (index) {
-          setState(() => _selectedNavigation = index);
-          if (index == 3) {
+          if (index == 2) {
             showSearch<void>(
               context: context,
               delegate: _VolumeSearchDelegate(_volumes),
             );
-          } else if (index != 1) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('This section will be added in the next build.'),
-                duration: Duration(seconds: 1),
-              ),
-            );
+            return;
           }
+          setState(() {
+            _selectedNavigation = index;
+            _selectedTab = index == 1 ? 1 : 0;
+          });
         },
       ),
     );
@@ -206,6 +230,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   setState(() {
                     _selectedYear = null;
                     _selectedTab = 0;
+                    _selectedNavigation = 0;
                   });
                   Navigator.pop(context);
                 },
@@ -224,12 +249,55 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     setState(() {
                       _selectedYear = year;
                       _selectedTab = 0;
+                      _selectedNavigation = 0;
                     });
                     Navigator.pop(context);
                   },
                 ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyBookmarks extends StatelessWidget {
+  const _EmptyBookmarks();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.bookmark_add_outlined,
+              size: 54,
+              color: Colors.white.withValues(alpha: .34),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'No bookmarks yet',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 7),
+            Text(
+              'Open a volume and tap the bookmark icon to save it here.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: .55),
+                fontSize: 14,
+                height: 1.4,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -344,16 +412,10 @@ class _VolumeTile extends StatelessWidget {
                                         overflow: TextOverflow.clip,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: Color(0xFF17130E),
+                                          color: Color(0xFF080604),
                                           fontSize: 12.8,
                                           height: 1,
                                           fontWeight: FontWeight.w900,
-                                          shadows: [
-                                            Shadow(
-                                              color: Color(0xCCF4E7C5),
-                                              blurRadius: 4,
-                                            ),
-                                          ],
                                         ),
                                       ),
                                     ),
@@ -366,15 +428,9 @@ class _VolumeTile extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Color(0xFF493E30),
+                                    color: Color(0xFF120C07),
                                     fontSize: 6.2,
                                     fontWeight: FontWeight.w700,
-                                    shadows: [
-                                      Shadow(
-                                        color: Color(0xDDF4E7C5),
-                                        blurRadius: 3,
-                                      ),
-                                    ],
                                   ),
                                 ),
                                 const SizedBox(height: 5),
@@ -390,17 +446,11 @@ class _VolumeTile extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
-                                    color: Color(0xFF17130E),
+                                    color: Color(0xFF070504),
                                     fontSize: 11,
                                     height: 1.08,
                                     letterSpacing: .1,
                                     fontWeight: FontWeight.w900,
-                                    shadows: [
-                                      Shadow(
-                                        color: Color(0xDDF4E7C5),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
                                   ),
                                 ),
                               ],
@@ -530,11 +580,9 @@ class _BottomNavigation extends StatelessWidget {
   final ValueChanged<int> onSelected;
 
   static const _items = [
-    (Icons.home_outlined, 'Home'),
     (Icons.auto_stories_outlined, 'Volumes'),
     (Icons.bookmark_border_rounded, 'Bookmarks'),
     (Icons.search_rounded, 'Search'),
-    (Icons.menu_rounded, 'Menu'),
   ];
 
   @override
@@ -555,6 +603,7 @@ class _BottomNavigation extends StatelessWidget {
               final selected = selectedIndex == index;
               return Expanded(
                 child: InkWell(
+                  key: Key('nav-${_items[index].$2.toLowerCase()}'),
                   onTap: () => onSelected(index),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
