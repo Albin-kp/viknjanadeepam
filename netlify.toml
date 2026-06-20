@@ -1,0 +1,36 @@
+[build]
+  command = "bash tool/netlify-build.sh"
+  publish = "build/web"
+
+[build.environment]
+  FLUTTER_WEB_CANVASKIT_URL = "/canvaskit/"
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin/"
+  status = 301
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/flutter_bootstrap.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/update-worker.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/assets/assets/data/catalog.json"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"

@@ -50,3 +50,10 @@ flutter run
 
 The web app is automatically deployed to GitHub Pages when changes are pushed
 to the `main` branch.
+
+## Netlify
+
+The repository includes [`netlify.toml`](netlify.toml). For a Netlify site
+connected to this repository, leave the Netlify base directory empty. Netlify
+will run `tool/netlify-build.sh` and publish `build/web` with the correct `/`
+base path for a root domain.
