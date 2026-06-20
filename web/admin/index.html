@@ -1,11 +1,61 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="refresh" content="0; url=../?admin=1">
-    <title>Vijnana Deepam Admin</title>
-    <script>location.replace('../?admin=1');</script>
-  </head>
-  <body></body>
+<html lang="ml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>വിക്ഞാനദീപം Admin</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{color-scheme:dark;--bg:#101316;--panel:#1a1f24;--field:#11161a;--gold:#c7a35b;--muted:#9aa2aa;--blue:#328bd1}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,"Noto Sans Malayalam",sans-serif}
+    button,input,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+    .center{min-height:100vh;display:grid;place-items:center;padding:24px}.card{width:min(440px,100%);background:var(--panel);padding:30px;border-radius:20px;border:1px solid #ffffff0f}
+    .brand{font-size:30px;font-weight:800;text-align:center}.eyebrow{color:var(--gold);font-size:10px;letter-spacing:1.5px;text-align:center;margin:5px 0 28px}
+    h1,h2,h3,p{margin-top:0}.muted{color:var(--muted);line-height:1.55}.field{margin:13px 0}.field label{display:block;color:#c3c8cc;font-size:13px;margin-bottom:7px}
+    input,textarea{width:100%;border:0;border-radius:10px;background:var(--field);color:#fff;padding:13px;outline:1px solid #ffffff10}
+    textarea{min-height:130px;resize:vertical;line-height:1.5}.primary,.secondary,.danger{border:0;border-radius:10px;padding:12px 17px;font-weight:700}
+    .primary{background:var(--blue);color:#fff}.secondary{background:#ffffff10;color:#fff}.danger{background:#5c2525;color:#ffb1ac}.wide{width:100%}.error{color:#ff9a95;margin:10px 0}
+    .shell{min-height:100vh;display:grid;grid-template-columns:240px 1fr}.side{background:#15191d;border-right:1px solid #ffffff0d;padding:26px 20px;display:flex;flex-direction:column}
+    .side .brand{text-align:left;font-size:24px}.nav{margin-top:34px}.nav button{width:100%;text-align:left;background:#253344;color:#fff;border:0;border-radius:10px;padding:13px;margin-bottom:8px}
+    .spacer{flex:1}.main{min-width:0}.top{display:flex;align-items:center;gap:14px;padding:22px 28px;border-bottom:1px solid #ffffff0d}.top h1{margin:0;font-size:27px}.top .muted{margin:4px 0 0}.top-actions{margin-left:auto;display:flex;gap:10px}
+    .content{padding:28px}.list{background:var(--panel);border:1px solid #ffffff0d;border-radius:17px;overflow:hidden}.row{display:grid;grid-template-columns:1fr 90px 110px 160px;gap:16px;align-items:center;padding:16px 18px;border-top:1px solid #ffffff0d}.row:first-child{border:0}
+    .title{font-weight:750}.meta{font-size:13px;color:var(--muted);margin-top:4px}.status{font-size:12px;font-weight:700;width:max-content;padding:5px 9px;border-radius:20px}.published{color:#67d39b;background:#67d39b1e}.draft{color:#e3b86e;background:#e3b86e1e}
+    dialog{width:min(900px,calc(100% - 24px));max-height:90vh;border:1px solid #ffffff13;border-radius:18px;background:#171c21;color:#fff;padding:0}.editor-head,.editor-foot{display:flex;align-items:center;padding:18px 22px;border-bottom:1px solid #ffffff10}.editor-foot{border-top:1px solid #ffffff10;border-bottom:0}.editor-body{padding:22px;max-height:68vh;overflow:auto}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.chapter{background:#20262c;padding:16px;border-radius:13px;margin-top:15px}.chapter-head{display:flex;align-items:center}.chapter-head button{margin-left:auto}
+    .editor-foot .right{margin-left:auto;display:flex;gap:9px}.setup-icon{font-size:42px;color:var(--gold)}
+    @media(max-width:760px){.shell{grid-template-columns:1fr}.side{display:none}.top{padding:18px}.top h1{font-size:22px}.content{padding:14px}.row{grid-template-columns:1fr auto}.row>*:nth-child(2),.row>*:nth-child(4){display:none}.grid{grid-template-columns:1fr}.editor-foot{flex-wrap:wrap;gap:10px}.editor-foot .right{width:100%;margin:0}.editor-foot .right button{flex:1}}
+  </style>
+</head>
+<body>
+  <section id="setup" class="center hidden"><div class="card"><div class="setup-icon">⌾</div><h1>Admin setup required</h1><p class="muted">Create the Supabase project, run <code>supabase/schema.sql</code>, add your administrator, and configure the GitHub secrets <code>SUPABASE_URL</code> and <code>SUPABASE_PUBLISHABLE_KEY</code>.</p></div></section>
+  <section id="login" class="center hidden"><form class="card" id="login-form"><div class="brand">വിക്ഞാനദീപം</div><div class="eyebrow">MAGAZINE ADMINISTRATION</div><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="password" type="password" required></div><div id="login-error" class="error"></div><button class="primary wide">Sign in</button></form></section>
+  <section id="app" class="shell hidden">
+    <aside class="side"><div class="brand">വിക്ഞാനദീപം</div><div class="eyebrow" style="text-align:left">HERITAGE MAGAZINE ADMIN</div><nav class="nav"><button>▣ &nbsp; Volumes</button><button class="secondary" onclick="openEditor()">＋ &nbsp; New volume</button></nav><div class="spacer"></div><div id="admin-email" class="muted"></div><button class="secondary" style="margin-top:10px" onclick="signOut()">Sign out</button></aside>
+    <main class="main"><header class="top"><div><h1>Magazine volumes</h1><p class="muted">Create, edit, and publish Malayalam editions.</p></div><div class="top-actions"><button class="secondary" onclick="loadVolumes()">Refresh</button><button class="primary" onclick="openEditor()">＋ Add volume</button></div></header><div class="content"><div id="volume-list" class="list"></div></div></main>
+  </section>
+  <dialog id="editor"><form id="volume-form"><header class="editor-head"><h2 id="editor-title" style="margin:0">Add volume</h2></header><div class="editor-body">
+    <input id="volume-id" type="hidden"><div class="grid"><div class="field"><label>Year</label><input id="year" type="number" required></div><div class="field"><label>Volume number</label><input id="number" type="number" required></div><div class="field"><label>Reading minutes</label><input id="minutes" type="number" value="30" required></div></div>
+    <div class="field"><label>Malayalam volume title</label><input id="title" required></div><div class="field"><label>Malayalam subtitle</label><input id="subtitle"></div><div class="field"><label>Malayalam description</label><textarea id="description"></textarea></div>
+    <div style="display:flex;align-items:center;margin-top:22px"><h3 style="margin:0">Chapters</h3><button type="button" class="secondary" style="margin-left:auto" onclick="addChapter()">＋ Add chapter</button></div><div id="chapters"></div><div id="save-error" class="error"></div>
+  </div><footer class="editor-foot"><label><input id="published" type="checkbox" style="width:auto"> Published</label><div class="right"><button type="button" class="secondary" onclick="editor.close()">Cancel</button><button type="submit" class="primary">Save volume</button></div></footer></form></dialog>
+  <template id="chapter-template"><div class="chapter"><div class="chapter-head"><strong>Chapter</strong><button type="button" class="danger" onclick="this.closest('.chapter').remove()">Remove</button></div><div class="field"><label>Chapter label</label><input class="kicker" value="Chapter"></div><div class="field"><label>Malayalam chapter title</label><input class="chapter-title" required></div><div class="field"><label>Malayalam content</label><textarea class="paragraphs" required placeholder="Separate paragraphs with a blank line."></textarea></div></div></template>
+  <script>
+    const config=window.ADMIN_CONFIG||{},setup=document.querySelector('#setup'),login=document.querySelector('#login'),app=document.querySelector('#app'),editor=document.querySelector('#editor');
+    let db=null,volumes=[];
+    const configured=/^https:\/\/.+\.supabase\.co$/.test(config.supabaseUrl||'')&&(config.supabaseKey||'').length>20;
+    if(!configured){setup.classList.remove('hidden')}else{db=supabase.createClient(config.supabaseUrl,config.supabaseKey);boot()}
+    async function boot(){const {data}=await db.auth.getSession(); data.session?showApp(data.session.user):login.classList.remove('hidden')}
+    document.querySelector('#login-form').onsubmit=async e=>{e.preventDefault();document.querySelector('#login-error').textContent='';const {data,error}=await db.auth.signInWithPassword({email:email.value,password:password.value});if(error)return document.querySelector('#login-error').textContent='Incorrect email or password.';showApp(data.user)}
+    async function showApp(user){login.classList.add('hidden');app.classList.remove('hidden');document.querySelector('#admin-email').textContent=user.email||'';await loadVolumes()}
+    async function signOut(){await db.auth.signOut();location.reload()}
+    async function loadVolumes(){const list=document.querySelector('#volume-list');list.innerHTML='<div class="row">Loading…</div>';const {data,error}=await db.from('magazine_volumes').select('*').order('year',{ascending:false}).order('volume_number',{ascending:false});if(error)return list.innerHTML='<div class="row error">'+escapeHtml(error.message)+'</div>';volumes=data||[];renderList()}
+    function renderList(){const list=document.querySelector('#volume-list');if(!volumes.length)return list.innerHTML='<div class="row"><div><div class="title">No volumes yet</div><div class="meta">Create the first Malayalam edition.</div></div></div>';list.innerHTML=volumes.map(v=>`<div class="row"><div><div class="title">${escapeHtml(v.title)}</div><div class="meta">Volume ${v.volume_number}</div></div><div>${v.year}</div><div><span class="status ${v.published?'published':'draft'}">${v.published?'Published':'Draft'}</span></div><div><button class="secondary" onclick="openEditor('${v.id}')">Edit</button> <button class="danger" onclick="deleteVolume('${v.id}')">Delete</button></div></div>`).join('')}
+    function openEditor(id){const v=volumes.find(x=>x.id===id);document.querySelector('#volume-form').reset();document.querySelector('#chapters').innerHTML='';document.querySelector('#volume-id').value=v?.id||'';document.querySelector('#editor-title').textContent=v?'Edit volume':'Add volume';year.value=v?.year||new Date().getFullYear();number.value=v?.volume_number||'';minutes.value=v?.reading_minutes||30;title.value=v?.title||'';subtitle.value=v?.subtitle||'';description.value=v?.description||'';published.checked=!!v?.published;(v?.chapters?.length?v.chapters:[null]).forEach(addChapter);editor.showModal()}
+    function addChapter(chapter){const node=document.querySelector('#chapter-template').content.cloneNode(true);if(chapter){node.querySelector('.kicker').value=chapter.kicker||'Chapter';node.querySelector('.chapter-title').value=chapter.title||'';node.querySelector('.paragraphs').value=(chapter.paragraphs||[]).join('\n\n')}document.querySelector('#chapters').append(node)}
+    document.querySelector('#volume-form').onsubmit=async e=>{e.preventDefault();document.querySelector('#save-error').textContent='';const chapters=[...document.querySelectorAll('.chapter')].map(c=>({kicker:c.querySelector('.kicker').value.trim()||'Chapter',title:c.querySelector('.chapter-title').value.trim(),paragraphs:c.querySelector('.paragraphs').value.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean)}));const payload={year:+year.value,volume_number:+number.value,title:title.value.trim(),subtitle:subtitle.value.trim(),description:description.value.trim(),reading_minutes:+minutes.value,chapters,published:published.checked};const id=document.querySelector('#volume-id').value;const q=id?db.from('magazine_volumes').update(payload).eq('id',id):db.from('magazine_volumes').insert(payload);const {error}=await q;if(error)return document.querySelector('#save-error').textContent=error.message;editor.close();await loadVolumes()}
+    async function deleteVolume(id){if(!confirm('Delete this volume permanently?'))return;const {error}=await db.from('magazine_volumes').delete().eq('id',id);if(error)alert(error.message);else loadVolumes()}
+    function escapeHtml(s=''){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+  </script>
+</body>
 </html>

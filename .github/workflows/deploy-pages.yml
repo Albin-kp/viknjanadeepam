@@ -45,21 +45,18 @@ jobs:
 
       - name: Add admin route entry point
         shell: bash
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
         run: |
           mkdir -p build/web/admin
-          cat > build/web/admin/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-            <head>
-              <meta charset="utf-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1">
-              <meta http-equiv="refresh" content="0; url=../?admin=1">
-              <title>Vijnana Deepam Admin</title>
-              <script>location.replace('../?admin=1');</script>
-            </head>
-            <body></body>
-          </html>
-          HTML
+          cp web/admin/index.html build/web/admin/index.html
+          cat > build/web/admin/config.js <<EOF
+          window.ADMIN_CONFIG = {
+            supabaseUrl: "$SUPABASE_URL",
+            supabaseKey: "$SUPABASE_PUBLISHABLE_KEY"
+          };
+          EOF
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
