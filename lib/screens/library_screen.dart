@@ -74,6 +74,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width <= 430;
     return Scaffold(
       backgroundColor: _background,
       body: SafeArea(
@@ -81,11 +82,16 @@ class _LibraryScreenState extends State<LibraryScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 18, 12, 0),
+              padding: EdgeInsets.fromLTRB(
+                compact ? 14 : 20,
+                compact ? 12 : 18,
+                compact ? 8 : 12,
+                0,
+              ),
               child: Row(
                 children: [
-                  const SizedBox(width: 44),
-                  const Expanded(
+                  SizedBox(width: compact ? 38 : 44),
+                  Expanded(
                     child: Column(
                       children: [
                         Text(
@@ -94,17 +100,17 @@ class _LibraryScreenState extends State<LibraryScreen> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 25,
+                            fontSize: compact ? 21 : 25,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Text(
                           'JACOBITE HISTORY ARCHIVE',
                           style: TextStyle(
-                            color: Color(0xFF90969E),
-                            fontSize: 8,
-                            letterSpacing: 1.35,
+                            color: const Color(0xFF90969E),
+                            fontSize: compact ? 6.5 : 8,
+                            letterSpacing: compact ? 1.05 : 1.35,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -115,12 +121,15 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     tooltip: 'Filter volumes',
                     onPressed: _showYearFilter,
                     color: Colors.white,
-                    icon: const Icon(Icons.tune_rounded, size: 27),
+                    icon: Icon(
+                      Icons.tune_rounded,
+                      size: compact ? 24 : 27,
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: compact ? 12 : 20),
             Row(
               children: [
                 _LibraryTab(
@@ -132,6 +141,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     _selectedTab = 0;
                     _selectedNavigation = 0;
                   }),
+                  compact: compact,
                 ),
                 _LibraryTab(
                   label: 'Bookmarks',
@@ -140,6 +150,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     _selectedTab = 1;
                     _selectedNavigation = 1;
                   }),
+                  compact: compact,
                 ),
               ],
             ),
@@ -151,13 +162,17 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   : RefreshIndicator(
                       onRefresh: _loadCatalog,
                       child: GridView.builder(
-                        padding: const EdgeInsets.fromLTRB(11, 14, 11, 118),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                        padding: EdgeInsets.fromLTRB(
+                          compact ? 8 : 11,
+                          compact ? 10 : 14,
+                          compact ? 8 : 11,
+                          compact ? 92 : 118,
+                        ),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          mainAxisSpacing: 14,
-                          crossAxisSpacing: 14,
-                          childAspectRatio: .68,
+                          mainAxisSpacing: compact ? 10 : 14,
+                          crossAxisSpacing: compact ? 10 : 14,
+                          childAspectRatio: compact ? .7 : .68,
                         ),
                         itemCount: _visibleVolumes.length,
                         itemBuilder: (context, index) {
@@ -309,11 +324,13 @@ class _LibraryTab extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    required this.compact,
   });
 
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -323,21 +340,21 @@ class _LibraryTab extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: EdgeInsets.symmetric(vertical: compact ? 9 : 12),
               child: Text(
                 label,
                 style: TextStyle(
                   color: selected
                       ? _LibraryScreenState._accent
                       : Colors.white.withValues(alpha: .74),
-                  fontSize: 18,
+                  fontSize: compact ? 15 : 18,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
             AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              width: 105,
+              width: compact ? 82 : 105,
               height: 3,
               decoration: BoxDecoration(
                 color:
@@ -360,6 +377,7 @@ class _VolumeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width <= 430;
     return Material(
       key: Key('volume-${volume.number}'),
       color: _LibraryScreenState._surface,
@@ -368,7 +386,12 @@ class _VolumeTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 16, 12, 13),
+          padding: EdgeInsets.fromLTRB(
+            compact ? 8 : 12,
+            compact ? 10 : 16,
+            compact ? 8 : 12,
+            compact ? 9 : 13,
+          ),
           child: Column(
             children: [
               Expanded(
@@ -384,11 +407,16 @@ class _VolumeTile extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                         Positioned(
-                          left: 5,
-                          right: 5,
-                          top: 13,
+                          left: compact ? 3 : 5,
+                          right: compact ? 3 : 5,
+                          top: compact ? 8 : 13,
                           child: Container(
-                            padding: const EdgeInsets.fromLTRB(7, 6, 7, 7),
+                            padding: EdgeInsets.fromLTRB(
+                              compact ? 4 : 7,
+                              compact ? 3 : 6,
+                              compact ? 4 : 7,
+                              compact ? 4 : 7,
+                            ),
                             color: Colors.transparent,
                             child: Column(
                               children: [
@@ -399,21 +427,21 @@ class _VolumeTile extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(3),
                                       child: Image.asset(
                                         'assets/images/vijnanadeepam-logo.png',
-                                        width: 29,
-                                        height: 29,
+                                        width: compact ? 22 : 29,
+                                        height: compact ? 22 : 29,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
-                                    const SizedBox(width: 4),
-                                    const Flexible(
+                                    SizedBox(width: compact ? 3 : 4),
+                                    Flexible(
                                       child: Text(
                                         'വിക്ഞാനദീപം',
                                         maxLines: 1,
                                         overflow: TextOverflow.clip,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: Color(0xFF080604),
-                                          fontSize: 12.8,
+                                          color: const Color(0xFF080604),
+                                          fontSize: compact ? 9.5 : 12.8,
                                           height: 1,
                                           fontWeight: FontWeight.w900,
                                         ),
@@ -421,33 +449,33 @@ class _VolumeTile extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 3),
-                                const Text(
+                                SizedBox(height: compact ? 2 : 3),
+                                Text(
                                   'യാക്കോബായ സുറിയാനി ക്രിസ്ത്യൻ ചരിത്ര മാസിക',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Color(0xFF120C07),
-                                    fontSize: 6.2,
+                                    color: const Color(0xFF120C07),
+                                    fontSize: compact ? 4.8 : 6.2,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                const SizedBox(height: 5),
+                                SizedBox(height: compact ? 3 : 5),
                                 Container(
                                   width: double.infinity,
                                   height: 1,
                                   color: const Color(0xFF3A3023),
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: compact ? 3 : 4),
                                 Text(
                                   volume.title,
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Color(0xFF070504),
-                                    fontSize: 11,
+                                  style: TextStyle(
+                                    color: const Color(0xFF070504),
+                                    fontSize: compact ? 8.3 : 11,
                                     height: 1.08,
                                     letterSpacing: .1,
                                     fontWeight: FontWeight.w900,
@@ -458,22 +486,22 @@ class _VolumeTile extends StatelessWidget {
                           ),
                         ),
                         Positioned(
-                          left: 8,
-                          right: 8,
-                          bottom: 8,
+                          left: compact ? 6 : 8,
+                          right: compact ? 6 : 8,
+                          bottom: compact ? 6 : 8,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 7,
-                              vertical: 6,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: compact ? 5 : 7,
+                              vertical: compact ? 4 : 6,
                             ),
                             color: const Color(0xDB0C1118),
                             child: Text(
                               '${volume.year}  •  VOL. ${volume.number}',
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Color(0xFFE5C477),
-                                fontSize: 9,
-                                letterSpacing: .7,
+                              style: TextStyle(
+                                color: const Color(0xFFE5C477),
+                                fontSize: compact ? 7.2 : 9,
+                                letterSpacing: compact ? .45 : .7,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -484,16 +512,16 @@ class _VolumeTile extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: compact ? 8 : 12),
               Text(
                 volume.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 15,
-                  height: 1.18,
+                  fontSize: compact ? 12.5 : 15,
+                  height: compact ? 1.12 : 1.18,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -587,6 +615,7 @@ class _BottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width <= 430;
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF17191C),
@@ -597,7 +626,7 @@ class _BottomNavigation extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 70,
+          height: compact ? 60 : 70,
           child: Row(
             children: List.generate(_items.length, (index) {
               final selected = selectedIndex == index;
@@ -613,7 +642,7 @@ class _BottomNavigation extends StatelessWidget {
                         color: selected
                             ? _LibraryScreenState._accent
                             : Colors.white.withValues(alpha: .4),
-                        size: 27,
+                        size: compact ? 23 : 27,
                       ),
                       const SizedBox(height: 3),
                       Text(
@@ -622,7 +651,7 @@ class _BottomNavigation extends StatelessWidget {
                           color: selected
                               ? _LibraryScreenState._accent
                               : Colors.white.withValues(alpha: .4),
-                          fontSize: 11,
+                          fontSize: compact ? 9.5 : 11,
                           fontWeight:
                               selected ? FontWeight.w700 : FontWeight.w500,
                         ),

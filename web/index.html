@@ -32,9 +32,94 @@
 
   <title>Vijnana Deepam</title>
   <link rel="manifest" href="manifest.json?v=__BUILD_VERSION__">
+  <style>
+    #install-card {
+      position: fixed;
+      z-index: 999999;
+      left: 14px;
+      right: 14px;
+      bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 13px;
+      color: #fff;
+      background: #17202a;
+      border: 1px solid rgba(229, 196, 119, .35);
+      border-radius: 14px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, .45);
+      font-family: system-ui, sans-serif;
+    }
+    #install-card img { width: 42px; height: 42px; border-radius: 9px; }
+    #install-copy { min-width: 0; flex: 1; }
+    #install-copy strong { display: block; font-size: 14px; }
+    #install-copy span { display: block; margin-top: 2px; color: #b7bec6; font-size: 11px; }
+    #install-action, #install-close {
+      border: 0;
+      color: #fff;
+      cursor: pointer;
+      font: 700 12px system-ui, sans-serif;
+    }
+    #install-action { padding: 9px 12px; background: #168ddd; border-radius: 9px; }
+    #install-close { padding: 8px 4px; background: transparent; color: #aab2bb; font-size: 18px; }
+    @media (min-width: 600px) {
+      #install-card { left: auto; width: 390px; }
+    }
+  </style>
 </head>
 <body>
+  <div id="install-card" role="dialog" aria-label="Install Vijnana Deepam">
+    <img src="icons/vijnanadeepam-192.png" alt="">
+    <div id="install-copy">
+      <strong>Install വിക്ഞാനദീപം</strong>
+      <span>Read volumes from your phone home screen.</span>
+    </div>
+    <button id="install-action" type="button">Install</button>
+    <button id="install-close" type="button" aria-label="Close">×</button>
+  </div>
   <script>
+    (function () {
+      const seenKey = 'vijnanadeepam-install-offer-seen';
+      const standalone = window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone === true;
+      if (standalone || localStorage.getItem(seenKey)) return;
+
+      let installPrompt = null;
+      const card = document.getElementById('install-card');
+      const action = document.getElementById('install-action');
+      const close = document.getElementById('install-close');
+
+      function rememberAndHide() {
+        localStorage.setItem(seenKey, 'true');
+        card.style.display = 'none';
+      }
+
+      window.addEventListener('beforeinstallprompt', function (event) {
+        event.preventDefault();
+        installPrompt = event;
+        action.textContent = 'Install';
+      });
+
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          if (!localStorage.getItem(seenKey)) card.style.display = 'flex';
+        }, 1800);
+      });
+
+      action.addEventListener('click', async function () {
+        if (installPrompt) {
+          installPrompt.prompt();
+          await installPrompt.userChoice;
+          installPrompt = null;
+        } else {
+          alert('Open the browser menu and choose “Add to Home screen” or “Install app”.');
+        }
+        rememberAndHide();
+      });
+      close.addEventListener('click', rememberAndHide);
+      window.addEventListener('appinstalled', rememberAndHide);
+    })();
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('controllerchange', function () {
         if (!sessionStorage.getItem('update-reloaded')) {
