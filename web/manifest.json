@@ -1,7 +1,7 @@
 {
     "name": "വിക്ഞാനദീപം",
     "short_name": "വിക്ഞാനദീപം",
-    "start_url": ".",
+    "start_url": ".?app=__BUILD_VERSION__",
     "display": "standalone",
     "background_color": "#08121D",
     "theme_color": "#08121D",

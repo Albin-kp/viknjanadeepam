@@ -31,25 +31,26 @@
   <link rel="icon" type="image/png" href="vijnanadeepam-favicon.png"/>
 
   <title>Vijnana Deepam</title>
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json?v=__BUILD_VERSION__">
 </head>
 <body>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function (registrations) {
-        registrations.forEach(function (registration) {
-          registration.unregister();
-        });
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (!sessionStorage.getItem('update-reloaded')) {
+          sessionStorage.setItem('update-reloaded', 'true');
+          window.location.reload();
+        }
       });
-    }
-    if ('caches' in window) {
-      caches.keys().then(function (keys) {
-        keys.forEach(function (key) {
-          caches.delete(key);
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register(
+          'update-worker.js?v=__BUILD_VERSION__'
+        ).then(function (registration) {
+          registration.update();
         });
       });
     }
   </script>
-  <script src="flutter_bootstrap.js"></script>
+  <script src="flutter_bootstrap.js?v=__BUILD_VERSION__"></script>
 </body>
 </html>

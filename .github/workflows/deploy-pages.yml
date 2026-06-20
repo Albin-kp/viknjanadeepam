@@ -31,7 +31,22 @@ jobs:
         run: flutter pub get
 
       - name: Build web app
-        run: flutter build web --release --base-href /viknjanadeepam/ --pwa-strategy=none
+        run: |
+          flutter build web \
+            --release \
+            --base-href /viknjanadeepam/ \
+            --pwa-strategy=none \
+            --dart-define="BUILD_VERSION=${GITHUB_SHA}"
+
+      - name: Version web assets
+        shell: bash
+        run: |
+          sed -i "s/__BUILD_VERSION__/${GITHUB_SHA}/g" \
+            build/web/index.html \
+            build/web/manifest.json \
+            build/web/update-worker.js
+          sed -i "s|main.dart.js|main.dart.js?v=${GITHUB_SHA}|g" \
+            build/web/flutter_bootstrap.js
 
       - name: Add admin route entry point
         shell: bash

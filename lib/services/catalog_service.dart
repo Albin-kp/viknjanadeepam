@@ -1,12 +1,24 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../models/magazine_volume.dart';
 
 class CatalogService {
+  static const _buildVersion = String.fromEnvironment(
+    'BUILD_VERSION',
+    defaultValue: 'local',
+  );
+
   Future<List<MagazineVolume>> loadVolumes() async {
-    final source = await rootBundle.loadString('assets/data/catalog.json');
+    final source = kIsWeb
+        ? await NetworkAssetBundle(
+            Uri.base,
+          ).loadString(
+            'assets/assets/data/catalog.json?v=$_buildVersion',
+          )
+        : await rootBundle.loadString('assets/data/catalog.json');
     final rows = jsonDecode(source) as List<dynamic>;
     final volumes = rows
         .map(
