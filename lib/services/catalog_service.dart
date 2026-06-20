@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/magazine_volume.dart';
 
@@ -12,13 +13,22 @@ class CatalogService {
   );
 
   Future<List<MagazineVolume>> loadVolumes() async {
-    final source = kIsWeb
-        ? await NetworkAssetBundle(
-            Uri.base.resolve('assets/assets/data/'),
-          ).loadString(
-            'catalog.json?v=$_buildVersion',
-          )
-        : await rootBundle.loadString('assets/data/catalog.json');
+    final String source;
+    if (kIsWeb) {
+      final response = await http.get(
+        Uri.base.resolve(
+          'assets/assets/data/catalog.json?v=$_buildVersion',
+        ),
+      );
+      if (response.statusCode != 200) {
+        throw Exception(
+          'Catalogue request failed: ${response.statusCode}',
+        );
+      }
+      source = utf8.decode(response.bodyBytes);
+    } else {
+      source = await rootBundle.loadString('assets/data/catalog.json');
+    }
     final rows = jsonDecode(source) as List<dynamic>;
     final volumes = rows
         .map(
