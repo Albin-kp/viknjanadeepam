@@ -14,9 +14,9 @@ class CatalogService {
   Future<List<MagazineVolume>> loadVolumes() async {
     final source = kIsWeb
         ? await NetworkAssetBundle(
-            Uri.base,
+            Uri.base.resolve('assets/assets/data/'),
           ).loadString(
-            'assets/assets/data/catalog.json?v=$_buildVersion',
+            'catalog.json?v=$_buildVersion',
           )
         : await rootBundle.loadString('assets/data/catalog.json');
     final rows = jsonDecode(source) as List<dynamic>;
