@@ -115,6 +115,30 @@
     "booklet_layout": true
   },
   {
+    "id": "volume-1782041865498",
+    "year": 2023,
+    "volume_number": 47,
+    "title": "Serial No- 47",
+    "subtitle": "NOVEMBER",
+    "description": "",
+    "reading_minutes": 30,
+    "chapters": [],
+    "published": true,
+    "pdf_path": "assets/books/volume-1782041865498-original.pdf",
+    "page_images": [
+      "assets/books/volume-1782041865498-page-001.jpg",
+      "assets/books/volume-1782041865498-page-002.jpg",
+      "assets/books/volume-1782041865498-page-003.jpg",
+      "assets/books/volume-1782041865498-page-004.jpg",
+      "assets/books/volume-1782041865498-page-005.jpg",
+      "assets/books/volume-1782041865498-page-006.jpg",
+      "assets/books/volume-1782041865498-page-007.jpg",
+      "assets/books/volume-1782041865498-page-008.jpg"
+    ],
+    "pdf_layout": "single_trimmed",
+    "booklet_layout": false
+  },
+  {
     "id": "volume-1781967123575",
     "year": 2023,
     "volume_number": 46,
