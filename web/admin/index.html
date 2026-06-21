@@ -7,7 +7,7 @@
   <script src="config.js"></script>
   <style>
     :root{color-scheme:dark;--bg:#0e1114;--panel:#181d22;--field:#101418;--gold:#c8a55e;--muted:#9ba4ad;--blue:#268bd2;--danger:#6c2929}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,"Noto Sans Malayalam",sans-serif}button,input,textarea{font:inherit}.hidden{display:none!important}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,"Noto Sans Malayalam",sans-serif}button,input,textarea,select{font:inherit}.hidden{display:none!important}
     button{cursor:pointer;border:0}.center{min-height:100vh;display:grid;place-items:center;padding:22px}.card{width:min(440px,100%);background:var(--panel);padding:30px;border:1px solid #ffffff12;border-radius:20px}
     .brand{font-size:30px;font-weight:850}.eyebrow{margin:5px 0 25px;color:var(--gold);font-size:10px;letter-spacing:1.6px}.muted{color:var(--muted);line-height:1.55}.field{margin:13px 0}.field label{display:block;color:#c7ccd1;font-size:13px;margin-bottom:7px}
     input,textarea,select{width:100%;padding:12px 13px;color:#fff;background:var(--field);border:1px solid #ffffff12;border-radius:10px;outline:none}textarea{min-height:125px;resize:vertical;line-height:1.5}
@@ -73,8 +73,17 @@
           </div>
           <div id="pdf-source" class="hidden">
             <div class="field"><label>Booklet PDF</label><input id="pdf-file" type="file" accept="application/pdf,.pdf"></div>
-            <label class="check-line"><input id="booklet-layout" type="checkbox" checked> PDF sheets contain two imposed pages, like the supplied 8–1, 2–7 sample</label>
-            <div id="pdf-status" class="pdf-status">The PDF will be split and reordered for phone reading when you publish.</div>
+            <div class="field">
+              <label>PDF page type</label>
+              <select id="pdf-layout" onchange="updatePdfHelp()">
+                <option value="single">Single pages in reading order (1, 2, 3…)</option>
+                <option value="single_trimmed">Centered single pages with wide side margins</option>
+                <option value="imposed">Print booklet sheets (8–1, 2–7, 6–3…)</option>
+                <option value="spreads">Two-page spreads in reading order</option>
+              </select>
+            </div>
+            <div id="pdf-layout-help" class="muted"></div>
+            <div id="pdf-status" class="pdf-status">The PDF will be converted into phone-readable pages when you publish.</div>
           </div>
         </div>
         <div id="save-error" class="error"></div>
@@ -118,7 +127,8 @@
       document.querySelector('#minutes').value=v?.reading_minutes||30;document.querySelector('#title').value=v?.title||'';
       document.querySelector('#subtitle').value=v?.subtitle||'';document.querySelector('#description').value=v?.description||'';
       document.querySelector('#published').checked=v?.published!==false;(v?.chapters?.length?v.chapters:[null]).forEach(addChapter);
-      document.querySelector('#pdf-file').value='';document.querySelector('#booklet-layout').checked=v?.booklet_layout!==false;
+      document.querySelector('#pdf-file').value='';
+      document.querySelector('#pdf-layout').value=v?.pdf_layout||(v?.booklet_layout===true?'imposed':'single');updatePdfHelp();
       document.querySelector('#pdf-status').textContent=v?.page_images?.length?`Current PDF edition: ${v.page_images.length} reading pages. Choose a new PDF only to replace it.`:'The PDF will be split and reordered for phone reading when you publish.';
       setSourceMode(v?.page_images?.length?'pdf':'chapters');editor.showModal();
     }
@@ -128,6 +138,16 @@
       document.querySelector('#pdf-source').classList.toggle('hidden',mode!=='pdf');
       document.querySelector('#chapters-tab').classList.toggle('active',mode==='chapters');
       document.querySelector('#pdf-tab').classList.toggle('active',mode==='pdf');
+    }
+    function updatePdfHelp(){
+      const layout=document.querySelector('#pdf-layout').value;
+      const messages={
+        single:'Choose this for a normal portrait PDF with one complete magazine page on each PDF page.',
+        single_trimmed:'Choose this for vinjanade.pdf: pages 1, 2, 3… are already ordered, rotation is corrected and the large white side margins are removed.',
+        imposed:'Choose this for vinjanadeepam.pdf: every PDF sheet contains two print-imposed pages such as 8–1 and 2–7.',
+        spreads:'Choose this when every PDF page shows two consecutive pages, such as 1–2, 3–4 and 5–6.'
+      };
+      document.querySelector('#pdf-layout-help').textContent=messages[layout];
     }
     function addChapter(chapter){
       const node=document.querySelector('#chapter-template').content.cloneNode(true);
@@ -143,12 +163,14 @@
       const pdfFile=document.querySelector('#pdf-file').files[0];
       if(sourceMode==='chapters'&&!chapters.length){document.querySelector('#save-error').textContent='Add at least one complete chapter, or select Upload booklet PDF.';return}
       if(sourceMode==='pdf'&&!pdfFile&&!existing?.page_images?.length){document.querySelector('#save-error').textContent='Choose a PDF file.';return}
-      if(pdfFile)pendingPdfs.set(id,{file:pdfFile,booklet:document.querySelector('#booklet-layout').checked});
+      const pdfLayout=document.querySelector('#pdf-layout').value;
+      if(pdfFile)pendingPdfs.set(id,{file:pdfFile,layout:pdfLayout});
       const payload={id,year:+document.querySelector('#year').value,volume_number:+document.querySelector('#number').value,title:document.querySelector('#title').value.trim(),subtitle:document.querySelector('#subtitle').value.trim(),description:document.querySelector('#description').value.trim(),reading_minutes:+document.querySelector('#minutes').value,chapters:sourceMode==='chapters'?chapters:(existing?.chapters||[]),published:document.querySelector('#published').checked};
       if(sourceMode==='pdf'){
         payload.pdf_path=existing?.pdf_path||'';
         payload.page_images=existing?.page_images||[];
-        payload.booklet_layout=document.querySelector('#booklet-layout').checked;
+        payload.pdf_layout=pdfLayout;
+        payload.booklet_layout=pdfLayout==='imposed';
       }
       const index=volumes.findIndex(v=>v.id===id);if(index<0)volumes.push(payload);else volumes[index]=payload;
       volumes.sort((a,b)=>b.year-a.year||b.volume_number-a.volume_number);editor.close();renderList();showMessage('Saved locally. Click “Publish to app” to update readers.','success');
@@ -163,7 +185,7 @@
         for(const [id,pending] of pendingPdfs){
           const volume=volumes.find(v=>v.id===id);if(!volume)continue;
           showMessage(`Preparing ${volume.title} PDF…`,'success');
-          const pages=await renderPdfPages(pending.file,pending.booklet);
+          const pages=await renderPdfPages(pending.file,pending.layout);
           files.push({path:`assets/books/${id}-original.pdf`,bytes:new Uint8Array(await pending.file.arrayBuffer())});
           const pagePaths=[];
           for(let i=0;i<pages.length;i++){
@@ -172,7 +194,7 @@
             files.push({path,bytes:new Uint8Array(await pages[i].arrayBuffer())});
             pagePaths.push(path);
           }
-          volume.pdf_path=`assets/books/${id}-original.pdf`;volume.page_images=pagePaths;volume.booklet_layout=pending.booklet;
+          volume.pdf_path=`assets/books/${id}-original.pdf`;volume.page_images=pagePaths;volume.pdf_layout=pending.layout;volume.booklet_layout=pending.layout==='imposed';
         }
         files.push({path:catalogPath,bytes:new TextEncoder().encode(JSON.stringify(volumes,null,2)+'\n')});
         showMessage(`Uploading ${files.length} files in one update…`,'success');
@@ -185,11 +207,11 @@
       if(!pdfJsPromise)pdfJsPromise=import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs').then(pdfjs=>{pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';return pdfjs});
       return pdfJsPromise;
     }
-    async function renderPdfPages(file,booklet){
+    async function renderPdfPages(file,layout){
       const pdfjs=await getPdfJs();
       const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
       const output=[];
-      if(booklet){
+      if(layout==='imposed'){
         const total=pdf.numPages*2,pageMap=new Map();
         for(let sheet=0;sheet<pdf.numPages;sheet++){
           const page=await pdf.getPage(sheet+1),base=page.getViewport({scale:1}),scale=2000/base.width,viewport=page.getViewport({scale});
@@ -204,14 +226,46 @@
           }
         }
         for(let number=1;number<=total;number++)output.push(pageMap.get(number));
+      }else if(layout==='spreads'){
+        for(let index=1;index<=pdf.numPages;index++){
+          const page=await pdf.getPage(index),base=page.getViewport({scale:1}),scale=2000/base.width,viewport=page.getViewport({scale});
+          const canvas=document.createElement('canvas');canvas.width=Math.round(viewport.width);canvas.height=Math.round(viewport.height);
+          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+          const half=Math.floor(canvas.width/2);
+          for(let side=0;side<2;side++){
+            const part=document.createElement('canvas');part.width=half;part.height=canvas.height;
+            part.getContext('2d').drawImage(canvas,side*half,0,half,canvas.height,0,0,half,canvas.height);
+            output.push(await canvasBlob(part));
+          }
+        }
       }else{
         for(let index=1;index<=pdf.numPages;index++){
           const page=await pdf.getPage(index),base=page.getViewport({scale:1}),viewport=page.getViewport({scale:1200/base.width});
           const canvas=document.createElement('canvas');canvas.width=Math.round(viewport.width);canvas.height=Math.round(viewport.height);
-          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;output.push(await canvasBlob(canvas));
+          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+          output.push(await canvasBlob(layout==='single_trimmed'?trimWhiteMargins(canvas):canvas));
         }
       }
       return output;
+    }
+    function trimWhiteMargins(canvas){
+      const context=canvas.getContext('2d'),pixels=context.getImageData(0,0,canvas.width,canvas.height).data;
+      let left=canvas.width,right=0,top=canvas.height,bottom=0;
+      for(let y=0;y<canvas.height;y+=3){
+        for(let x=0;x<canvas.width;x+=3){
+          const offset=(y*canvas.width+x)*4;
+          if(pixels[offset]<245||pixels[offset+1]<245||pixels[offset+2]<245){
+            left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);
+          }
+        }
+      }
+      if(right<=left||bottom<=top)return canvas;
+      const padding=22;
+      left=Math.max(0,left-padding);top=Math.max(0,top-padding);
+      right=Math.min(canvas.width-1,right+padding);bottom=Math.min(canvas.height-1,bottom+padding);
+      const cropped=document.createElement('canvas');cropped.width=right-left+1;cropped.height=bottom-top+1;
+      cropped.getContext('2d').drawImage(canvas,left,top,cropped.width,cropped.height,0,0,cropped.width,cropped.height);
+      return cropped;
     }
     function canvasBlob(canvas){return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Could not prepare a PDF page.')),'image/jpeg',.86))}
     async function publishFiles(files,headers){
