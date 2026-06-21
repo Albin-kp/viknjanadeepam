@@ -16,7 +16,19 @@
         ]
       }
     ],
-    "published": true
+    "published": true,
+    "pdf_path": "assets/books/volume-1781967123575-original.pdf",
+    "page_images": [
+      "assets/books/volume-1781967123575-page-001.jpg",
+      "assets/books/volume-1781967123575-page-002.jpg",
+      "assets/books/volume-1781967123575-page-003.jpg",
+      "assets/books/volume-1781967123575-page-004.jpg",
+      "assets/books/volume-1781967123575-page-005.jpg",
+      "assets/books/volume-1781967123575-page-006.jpg",
+      "assets/books/volume-1781967123575-page-007.jpg",
+      "assets/books/volume-1781967123575-page-008.jpg"
+    ],
+    "booklet_layout": true
   },
   {
     "id": "volume-12",
