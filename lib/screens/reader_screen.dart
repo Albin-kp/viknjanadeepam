@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../main.dart';
 import '../models/magazine_volume.dart';
@@ -21,6 +22,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   final _bookmarkService = BookmarkService.instance;
 
   bool get _bookmarked => _bookmarkService.contains(widget.volume);
+  bool get _isPdfEdition => widget.volume.pageImages.isNotEmpty;
 
   @override
   void initState() {
@@ -78,16 +80,18 @@ class _ReaderScreenState extends State<ReaderScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            tooltip: 'Contents',
-            onPressed: _showContents,
-            icon: const Icon(Icons.list_rounded),
-          ),
-          IconButton(
-            tooltip: 'Reading settings',
-            onPressed: _showReadingSettings,
-            icon: const Icon(Icons.text_fields_rounded),
-          ),
+          if (!_isPdfEdition)
+            IconButton(
+              tooltip: 'Contents',
+              onPressed: _showContents,
+              icon: const Icon(Icons.list_rounded),
+            ),
+          if (!_isPdfEdition)
+            IconButton(
+              tooltip: 'Reading settings',
+              onPressed: _showReadingSettings,
+              icon: const Icon(Icons.text_fields_rounded),
+            ),
           IconButton(
             tooltip: _bookmarked ? 'Remove bookmark' : 'Bookmark',
             onPressed: () => _bookmarkService.toggle(widget.volume),
@@ -108,54 +112,63 @@ class _ReaderScreenState extends State<ReaderScreen> {
           ),
         ),
       ),
-      body: SelectionArea(
-        child: ListView(
-          controller: _scrollController,
-          padding: const EdgeInsets.fromLTRB(24, 44, 24, 90),
-          children: [
-            Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 680),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.volume.title,
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                    const SizedBox(height: 14),
-                    Text(
-                      widget.volume.subtitle,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: VijnanaDeepamApp.ink.withValues(alpha: .62),
-                            fontWeight: FontWeight.w400,
+      body: _isPdfEdition
+          ? _PdfPageReader(
+              volume: widget.volume,
+              controller: _scrollController,
+            )
+          : SelectionArea(
+              child: ListView(
+                controller: _scrollController,
+                padding: const EdgeInsets.fromLTRB(24, 44, 24, 90),
+                children: [
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 680),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.volume.title,
+                            style: Theme.of(context).textTheme.displaySmall,
                           ),
-                    ),
-                    const SizedBox(height: 34),
-                    const Divider(
-                        color: VijnanaDeepamApp.saffron, thickness: 2),
-                    const SizedBox(height: 24),
-                    for (var index = 0;
-                        index < widget.volume.chapters.length;
-                        index++)
-                      _ChapterSection(
-                        key: _chapterKeys[index],
-                        chapter: widget.volume.chapters[index],
-                        fontSize: _fontSize,
+                          const SizedBox(height: 14),
+                          Text(
+                            widget.volume.subtitle,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  color: VijnanaDeepamApp.ink
+                                      .withValues(alpha: .62),
+                                  fontWeight: FontWeight.w400,
+                                ),
+                          ),
+                          const SizedBox(height: 34),
+                          const Divider(
+                              color: VijnanaDeepamApp.saffron, thickness: 2),
+                          const SizedBox(height: 24),
+                          for (var index = 0;
+                              index < widget.volume.chapters.length;
+                              index++)
+                            _ChapterSection(
+                              key: _chapterKeys[index],
+                              chapter: widget.volume.chapters[index],
+                              fontSize: _fontSize,
+                            ),
+                          const Center(
+                            child: Icon(
+                              Icons.auto_stories_rounded,
+                              color: VijnanaDeepamApp.saffron,
+                            ),
+                          ),
+                        ],
                       ),
-                    const Center(
-                      child: Icon(
-                        Icons.auto_stories_rounded,
-                        color: VijnanaDeepamApp.saffron,
-                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -237,6 +250,96 @@ class _ReaderScreenState extends State<ReaderScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _PdfPageReader extends StatelessWidget {
+  const _PdfPageReader({
+    required this.volume,
+    required this.controller,
+  });
+
+  final MagazineVolume volume;
+  final ScrollController controller;
+
+  String _pageUrl(String path) {
+    if (!kIsWeb) return path;
+    return Uri.base.resolve('assets/$path').toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: const Color(0xFF22262A),
+      child: ListView.separated(
+        controller: controller,
+        padding: const EdgeInsets.fromLTRB(10, 14, 10, 42),
+        itemCount: volume.pageImages.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 14),
+        itemBuilder: (context, index) {
+          final path = volume.pageImages[index];
+          final page = ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: kIsWeb
+                ? Image.network(
+                    _pageUrl(path),
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                    filterQuality: FilterQuality.high,
+                    loadingBuilder: (context, child, progress) {
+                      if (progress == null) return child;
+                      return const AspectRatio(
+                        aspectRatio: .64,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    },
+                    errorBuilder: (_, __, ___) => const AspectRatio(
+                      aspectRatio: .64,
+                      child: Center(
+                        child: Text(
+                          'This page could not be loaded.',
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                      ),
+                    ),
+                  )
+                : Image.asset(
+                    path,
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                    filterQuality: FilterQuality.high,
+                  ),
+          );
+          return Semantics(
+            label: 'Page ${index + 1}',
+            child: Column(
+              children: [
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 760),
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black45,
+                          blurRadius: 12,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: page,
+                  ),
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  '${index + 1} / ${volume.pageImages.length}',
+                  style: const TextStyle(color: Colors.white60, fontSize: 12),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

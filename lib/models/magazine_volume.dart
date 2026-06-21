@@ -8,6 +8,8 @@ class MagazineVolume {
     required this.description,
     required this.readingMinutes,
     required this.chapters,
+    this.pdfPath,
+    this.pageImages = const [],
     this.published = false,
     this.updatedAt,
   });
@@ -20,6 +22,8 @@ class MagazineVolume {
   final String description;
   final int readingMinutes;
   final List<MagazineChapter> chapters;
+  final String? pdfPath;
+  final List<String> pageImages;
   final bool published;
   final DateTime? updatedAt;
 
@@ -42,6 +46,10 @@ class MagazineVolume {
                 MagazineChapter.fromJson(chapter as Map<String, dynamic>),
           )
           .toList(),
+      pdfPath: json['pdf_path'] as String?,
+      pageImages: (json['page_images'] as List<dynamic>? ?? const [])
+          .map((path) => path.toString())
+          .toList(),
       published: json['published'] as bool? ?? false,
       updatedAt: json['updated_at'] == null
           ? null
@@ -58,6 +66,8 @@ class MagazineVolume {
         'description': description,
         'reading_minutes': readingMinutes,
         'chapters': chapters.map((chapter) => chapter.toJson()).toList(),
+        if (pdfPath != null) 'pdf_path': pdfPath,
+        if (pageImages.isNotEmpty) 'page_images': pageImages,
         'published': published,
       };
 
@@ -70,6 +80,8 @@ class MagazineVolume {
     String? description,
     int? readingMinutes,
     List<MagazineChapter>? chapters,
+    String? pdfPath,
+    List<String>? pageImages,
     bool? published,
     DateTime? updatedAt,
   }) {
@@ -82,6 +94,8 @@ class MagazineVolume {
       description: description ?? this.description,
       readingMinutes: readingMinutes ?? this.readingMinutes,
       chapters: chapters ?? this.chapters,
+      pdfPath: pdfPath ?? this.pdfPath,
+      pageImages: pageImages ?? this.pageImages,
       published: published ?? this.published,
       updatedAt: updatedAt ?? this.updatedAt,
     );
