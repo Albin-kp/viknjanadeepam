@@ -72,7 +72,7 @@
             <div id="chapters"></div>
           </div>
           <div id="pdf-source" class="hidden">
-            <div class="field"><label>Booklet PDF</label><input id="pdf-file" type="file" accept="application/pdf,.pdf"></div>
+            <div class="field"><label>Booklet PDF</label><input id="pdf-file" type="file" accept="application/pdf,.pdf" onchange="inspectPdfHeader()"></div>
             <div class="field">
               <label>PDF page type</label>
               <select id="pdf-layout" onchange="updatePdfHelp()">
@@ -121,7 +121,7 @@
       list.innerHTML=volumes.map(v=>`<div class="row"><div><div class="title">${escapeHtml(v.title)}</div><div class="meta">${escapeHtml(v.subtitle||'')} · Volume ${v.volume_number} · ${v.page_images?.length?'PDF':'Chapters'}</div></div><div>${v.year}</div><div class="actions"><button class="secondary" onclick="openEditor('${v.id}')">Edit</button> <button class="danger" onclick="deleteVolume('${v.id}')">Delete</button></div></div>`).join('');
     }
     function openEditor(id){
-      const v=volumes.find(x=>x.id===id);document.querySelector('#volume-form').reset();document.querySelector('#chapters').innerHTML='';
+      const v=volumes.find(x=>x.id===id);document.querySelector('#volume-form').reset();document.querySelector('#volume-form').dataset.issueLabel=v?.issue_label||'';document.querySelector('#chapters').innerHTML='';
       document.querySelector('#volume-id').value=v?.id||'';document.querySelector('#editor-title').textContent=v?'Edit volume':'Add volume';
       document.querySelector('#year').value=v?.year||new Date().getFullYear();document.querySelector('#number').value=v?.volume_number||'';
       document.querySelector('#minutes').value=v?.reading_minutes||30;document.querySelector('#title').value=v?.title||'';
@@ -165,7 +165,7 @@
       if(sourceMode==='pdf'&&!pdfFile&&!existing?.page_images?.length){document.querySelector('#save-error').textContent='Choose a PDF file.';return}
       const pdfLayout=document.querySelector('#pdf-layout').value;
       if(pdfFile)pendingPdfs.set(id,{file:pdfFile,layout:pdfLayout});
-      const payload={id,year:+document.querySelector('#year').value,volume_number:+document.querySelector('#number').value,title:document.querySelector('#title').value.trim(),subtitle:document.querySelector('#subtitle').value.trim(),description:document.querySelector('#description').value.trim(),reading_minutes:+document.querySelector('#minutes').value,chapters:sourceMode==='chapters'?chapters:(existing?.chapters||[]),published:document.querySelector('#published').checked};
+      const payload={id,year:+document.querySelector('#year').value,volume_number:+document.querySelector('#number').value,title:document.querySelector('#title').value.trim(),subtitle:document.querySelector('#subtitle').value.trim(),description:document.querySelector('#description').value.trim(),reading_minutes:+document.querySelector('#minutes').value,chapters:sourceMode==='chapters'?chapters:(existing?.chapters||[]),published:document.querySelector('#published').checked,issue_label:document.querySelector('#volume-form').dataset.issueLabel||existing?.issue_label||''};
       if(sourceMode==='pdf'){
         payload.pdf_path=existing?.pdf_path||'';
         payload.page_images=existing?.page_images||[];
@@ -206,6 +206,33 @@
     async function getPdfJs(){
       if(!pdfJsPromise)pdfJsPromise=import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs').then(pdfjs=>{pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';return pdfjs});
       return pdfJsPromise;
+    }
+    async function inspectPdfHeader(){
+      const file=document.querySelector('#pdf-file').files[0];
+      if(!file)return;
+      const status=document.querySelector('#pdf-status');
+      status.textContent='Reading cover data from the first page…';
+      try{
+        const pdfjs=await getPdfJs();
+        const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+        const firstPage=await pdf.getPage(1),content=await firstPage.getTextContent();
+        const header=content.items.map(item=>item.str||'').join(' ').replace(/\s+/g,' ').trim();
+        const serial=header.match(/Serial\s*(?:No\.?|Number)?\s*[-:.]?\s*(\d+)/i);
+        const issue=header.match(/\b(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\s+(19|20)\d{2}\b/i);
+        const year=issue?.[0].match(/\d{4}/)?.[0]||header.match(/\b(19|20)\d{2}\b/)?.[0];
+        if(serial){
+          document.querySelector('#number').value=serial[1];
+          document.querySelector('#title').value=`Serial No - ${serial[1]}`;
+        }
+        if(year)document.querySelector('#year').value=year;
+        if(issue)document.querySelector('#subtitle').value=issue[0].toUpperCase();
+        document.querySelector('#volume-form').dataset.issueLabel=issue?.[0]?.toUpperCase()||year||'';
+        document.querySelector('#minutes').value=Math.max(5,Math.ceil((pdf.numPages*(document.querySelector('#pdf-layout').value==='imposed'||document.querySelector('#pdf-layout').value==='spreads'?2:1))*3));
+        const found=[serial&&`Serial ${serial[1]}`,issue&&issue[0].toUpperCase()].filter(Boolean);
+        status.textContent=found.length?`Cover data found: ${found.join(' · ')}. You can edit the fields above before saving.`:'No standard date or serial number was found. Enter the cover fields manually.';
+      }catch(error){
+        status.textContent='The PDF header could not be read automatically. Enter the cover fields manually.';
+      }
     }
     async function renderPdfPages(file,layout){
       const pdfjs=await getPdfJs();

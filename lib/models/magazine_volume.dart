@@ -10,6 +10,7 @@ class MagazineVolume {
     required this.chapters,
     this.pdfPath,
     this.pageImages = const [],
+    this.issueLabel,
     this.published = false,
     this.updatedAt,
   });
@@ -24,6 +25,7 @@ class MagazineVolume {
   final List<MagazineChapter> chapters;
   final String? pdfPath;
   final List<String> pageImages;
+  final String? issueLabel;
   final bool published;
   final DateTime? updatedAt;
 
@@ -50,6 +52,7 @@ class MagazineVolume {
       pageImages: (json['page_images'] as List<dynamic>? ?? const [])
           .map((path) => path.toString())
           .toList(),
+      issueLabel: json['issue_label'] as String?,
       published: json['published'] as bool? ?? false,
       updatedAt: json['updated_at'] == null
           ? null
@@ -68,6 +71,7 @@ class MagazineVolume {
         'chapters': chapters.map((chapter) => chapter.toJson()).toList(),
         if (pdfPath != null) 'pdf_path': pdfPath,
         if (pageImages.isNotEmpty) 'page_images': pageImages,
+        if (issueLabel != null) 'issue_label': issueLabel,
         'published': published,
       };
 
@@ -82,6 +86,7 @@ class MagazineVolume {
     List<MagazineChapter>? chapters,
     String? pdfPath,
     List<String>? pageImages,
+    String? issueLabel,
     bool? published,
     DateTime? updatedAt,
   }) {
@@ -96,9 +101,20 @@ class MagazineVolume {
       chapters: chapters ?? this.chapters,
       pdfPath: pdfPath ?? this.pdfPath,
       pageImages: pageImages ?? this.pageImages,
+      issueLabel: issueLabel ?? this.issueLabel,
       published: published ?? this.published,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+
+  String get coverIssueLabel {
+    final saved = issueLabel?.trim();
+    if (saved != null && saved.isNotEmpty) return saved.toUpperCase();
+    final candidate =
+        subtitle.trim().isNotEmpty ? subtitle.trim() : description.trim();
+    if (candidate.isEmpty) return year.toString();
+    if (candidate.contains(year.toString())) return candidate.toUpperCase();
+    return '${candidate.toUpperCase()} $year';
   }
 }
 

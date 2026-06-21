@@ -13,14 +13,15 @@ void main() {
     await tester.pumpWidget(const VijnanaDeepamApp());
 
     expect(find.byKey(const Key('app-heading')), findsOneWidget);
-    expect(find.text('Apostolic Roots'), findsWidgets);
+    await tester.pumpAndSettle();
+    expect(find.text('Serial No -52'), findsWidgets);
 
-    await tester.ensureVisible(find.byKey(const Key('volume-12')));
-    await tester.tap(find.byKey(const Key('volume-12')));
+    await tester.ensureVisible(find.byKey(const Key('volume-52')));
+    await tester.tap(find.byKey(const Key('volume-52')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Apostolic Roots'), findsWidgets);
-    expect(find.text('CHAPTER 1'), findsOneWidget);
+    expect(find.text('2026 · Volume 52'), findsOneWidget);
+    expect(find.text('1 / 8'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Bookmark'));
     await tester.pumpAndSettle();
@@ -31,7 +32,7 @@ void main() {
     await tester.tap(find.byKey(const Key('nav-bookmarks')));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('volume-12')), findsOneWidget);
+    expect(find.byKey(const Key('volume-52')), findsOneWidget);
   });
 
   test('loads a PDF-backed volume from the catalogue', () {
@@ -51,5 +52,19 @@ void main() {
     expect(volume.pageImages, hasLength(2));
     expect(volume.pdfPath, endsWith('original.pdf'));
     expect(volume.chapters, isEmpty);
+    expect(volume.coverIssueLabel, '2023');
+  });
+
+  test('builds a cover issue label from uploaded PDF metadata', () {
+    final volume = MagazineVolume.fromJson({
+      'year': 2023,
+      'volume_number': 47,
+      'title': 'Serial No - 47',
+      'subtitle': 'NOVEMBER 2023',
+      'issue_label': 'NOVEMBER 2023',
+      'published': true,
+    });
+
+    expect(volume.coverIssueLabel, 'NOVEMBER 2023');
   });
 }
