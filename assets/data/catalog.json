@@ -1,5 +1,51 @@
 [
   {
+    "id": "volume-1782039018488",
+    "year": 2026,
+    "volume_number": 52,
+    "title": "Serial No -52",
+    "subtitle": "MARCH",
+    "description": "",
+    "reading_minutes": 30,
+    "chapters": [],
+    "published": true,
+    "pdf_path": "assets/books/volume-1782039018488-original.pdf",
+    "page_images": [
+      "assets/books/volume-1782039018488-page-001.jpg",
+      "assets/books/volume-1782039018488-page-002.jpg",
+      "assets/books/volume-1782039018488-page-003.jpg",
+      "assets/books/volume-1782039018488-page-004.jpg",
+      "assets/books/volume-1782039018488-page-005.jpg",
+      "assets/books/volume-1782039018488-page-006.jpg",
+      "assets/books/volume-1782039018488-page-007.jpg",
+      "assets/books/volume-1782039018488-page-008.jpg"
+    ],
+    "booklet_layout": true
+  },
+  {
+    "id": "volume-1782038903389",
+    "year": 2025,
+    "volume_number": 51,
+    "title": "Serial No -51",
+    "subtitle": "AUGUST",
+    "description": "",
+    "reading_minutes": 30,
+    "chapters": [],
+    "published": true,
+    "pdf_path": "assets/books/volume-1782038903389-original.pdf",
+    "page_images": [
+      "assets/books/volume-1782038903389-page-001.jpg",
+      "assets/books/volume-1782038903389-page-002.jpg",
+      "assets/books/volume-1782038903389-page-003.jpg",
+      "assets/books/volume-1782038903389-page-004.jpg",
+      "assets/books/volume-1782038903389-page-005.jpg",
+      "assets/books/volume-1782038903389-page-006.jpg",
+      "assets/books/volume-1782038903389-page-007.jpg",
+      "assets/books/volume-1782038903389-page-008.jpg"
+    ],
+    "booklet_layout": true
+  },
+  {
     "id": "volume-1782038650831",
     "year": 2025,
     "volume_number": 50,
@@ -23,11 +69,57 @@
     "booklet_layout": true
   },
   {
+    "id": "volume-1782038802047",
+    "year": 2024,
+    "volume_number": 48,
+    "title": "Serial No -48",
+    "subtitle": "JULY",
+    "description": "",
+    "reading_minutes": 30,
+    "chapters": [],
+    "published": true,
+    "pdf_path": "assets/books/volume-1782038802047-original.pdf",
+    "page_images": [
+      "assets/books/volume-1782038802047-page-001.jpg",
+      "assets/books/volume-1782038802047-page-002.jpg",
+      "assets/books/volume-1782038802047-page-003.jpg",
+      "assets/books/volume-1782038802047-page-004.jpg",
+      "assets/books/volume-1782038802047-page-005.jpg",
+      "assets/books/volume-1782038802047-page-006.jpg",
+      "assets/books/volume-1782038802047-page-007.jpg",
+      "assets/books/volume-1782038802047-page-008.jpg"
+    ],
+    "booklet_layout": true
+  },
+  {
+    "id": "volume-1782039165812",
+    "year": 2023,
+    "volume_number": 47,
+    "title": "Serial No-47",
+    "subtitle": "NOVEMBER",
+    "description": "",
+    "reading_minutes": 30,
+    "chapters": [],
+    "published": true,
+    "pdf_path": "assets/books/volume-1782039165812-original.pdf",
+    "page_images": [
+      "assets/books/volume-1782039165812-page-001.jpg",
+      "assets/books/volume-1782039165812-page-002.jpg",
+      "assets/books/volume-1782039165812-page-003.jpg",
+      "assets/books/volume-1782039165812-page-004.jpg",
+      "assets/books/volume-1782039165812-page-005.jpg",
+      "assets/books/volume-1782039165812-page-006.jpg",
+      "assets/books/volume-1782039165812-page-007.jpg",
+      "assets/books/volume-1782039165812-page-008.jpg"
+    ],
+    "booklet_layout": true
+  },
+  {
     "id": "volume-1781967123575",
     "year": 2023,
     "volume_number": 46,
-    "title": "Serial no.46",
-    "subtitle": "",
+    "title": "Serial No -46",
+    "subtitle": "JULY",
     "description": "",
     "reading_minutes": 30,
     "chapters": [
@@ -50,6 +142,52 @@
       "assets/books/volume-1781967123575-page-006.jpg",
       "assets/books/volume-1781967123575-page-007.jpg",
       "assets/books/volume-1781967123575-page-008.jpg"
+    ],
+    "booklet_layout": true
+  },
+  {
+    "id": "volume-1782039083201",
+    "year": 2023,
+    "volume_number": 45,
+    "title": "Serial No-45",
+    "subtitle": "JANUARY",
+    "description": "",
+    "reading_minutes": 30,
+    "chapters": [],
+    "published": true,
+    "pdf_path": "assets/books/volume-1782039083201-original.pdf",
+    "page_images": [
+      "assets/books/volume-1782039083201-page-001.jpg",
+      "assets/books/volume-1782039083201-page-002.jpg",
+      "assets/books/volume-1782039083201-page-003.jpg",
+      "assets/books/volume-1782039083201-page-004.jpg",
+      "assets/books/volume-1782039083201-page-005.jpg",
+      "assets/books/volume-1782039083201-page-006.jpg",
+      "assets/books/volume-1782039083201-page-007.jpg",
+      "assets/books/volume-1782039083201-page-008.jpg"
+    ],
+    "booklet_layout": true
+  },
+  {
+    "id": "volume-1782038749072",
+    "year": 2022,
+    "volume_number": 44,
+    "title": "Serial No-44",
+    "subtitle": "JULY",
+    "description": "",
+    "reading_minutes": 30,
+    "chapters": [],
+    "published": true,
+    "pdf_path": "assets/books/volume-1782038749072-original.pdf",
+    "page_images": [
+      "assets/books/volume-1782038749072-page-001.jpg",
+      "assets/books/volume-1782038749072-page-002.jpg",
+      "assets/books/volume-1782038749072-page-003.jpg",
+      "assets/books/volume-1782038749072-page-004.jpg",
+      "assets/books/volume-1782038749072-page-005.jpg",
+      "assets/books/volume-1782038749072-page-006.jpg",
+      "assets/books/volume-1782038749072-page-007.jpg",
+      "assets/books/volume-1782038749072-page-008.jpg"
     ],
     "booklet_layout": true
   }
