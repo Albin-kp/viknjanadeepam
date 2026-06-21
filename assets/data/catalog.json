@@ -69,6 +69,29 @@
     "booklet_layout": true
   },
   {
+    "id": "volume-1782039904524",
+    "year": 2024,
+    "volume_number": 49,
+    "title": "Serial No -49",
+    "subtitle": "",
+    "description": "September",
+    "reading_minutes": 30,
+    "chapters": [],
+    "published": true,
+    "pdf_path": "assets/books/volume-1782039904524-original.pdf",
+    "page_images": [
+      "assets/books/volume-1782039904524-page-001.jpg",
+      "assets/books/volume-1782039904524-page-002.jpg",
+      "assets/books/volume-1782039904524-page-003.jpg",
+      "assets/books/volume-1782039904524-page-004.jpg",
+      "assets/books/volume-1782039904524-page-005.jpg",
+      "assets/books/volume-1782039904524-page-006.jpg",
+      "assets/books/volume-1782039904524-page-007.jpg",
+      "assets/books/volume-1782039904524-page-008.jpg"
+    ],
+    "booklet_layout": true
+  },
+  {
     "id": "volume-1782038802047",
     "year": 2024,
     "volume_number": 48,
@@ -92,25 +115,25 @@
     "booklet_layout": true
   },
   {
-    "id": "volume-1782039165812",
+    "id": "volume-1782039848947",
     "year": 2023,
     "volume_number": 47,
-    "title": "Serial No-47",
-    "subtitle": "NOVEMBER",
-    "description": "",
+    "title": "Serial No - 47",
+    "subtitle": "",
+    "description": "November",
     "reading_minutes": 30,
     "chapters": [],
     "published": true,
-    "pdf_path": "assets/books/volume-1782039165812-original.pdf",
+    "pdf_path": "assets/books/volume-1782039848947-original.pdf",
     "page_images": [
-      "assets/books/volume-1782039165812-page-001.jpg",
-      "assets/books/volume-1782039165812-page-002.jpg",
-      "assets/books/volume-1782039165812-page-003.jpg",
-      "assets/books/volume-1782039165812-page-004.jpg",
-      "assets/books/volume-1782039165812-page-005.jpg",
-      "assets/books/volume-1782039165812-page-006.jpg",
-      "assets/books/volume-1782039165812-page-007.jpg",
-      "assets/books/volume-1782039165812-page-008.jpg"
+      "assets/books/volume-1782039848947-page-001.jpg",
+      "assets/books/volume-1782039848947-page-002.jpg",
+      "assets/books/volume-1782039848947-page-003.jpg",
+      "assets/books/volume-1782039848947-page-004.jpg",
+      "assets/books/volume-1782039848947-page-005.jpg",
+      "assets/books/volume-1782039848947-page-006.jpg",
+      "assets/books/volume-1782039848947-page-007.jpg",
+      "assets/books/volume-1782039848947-page-008.jpg"
     ],
     "booklet_layout": true
   },
