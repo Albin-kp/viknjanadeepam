@@ -62,6 +62,7 @@ flutter:
     - assets/images/heritage-cover.png
     - assets/images/vijnanadeepam-logo.png
     - assets/data/catalog.json
+    - assets/data/categories.json
     - assets/books/
 
   # To add assets to your application, add an assets section, like this:

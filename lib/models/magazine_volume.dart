@@ -8,6 +8,8 @@ class MagazineVolume {
     required this.description,
     required this.readingMinutes,
     required this.chapters,
+    this.category = 'General',
+    this.coverColorHex = '#8F2020',
     this.pdfPath,
     this.pageImages = const [],
     this.issueLabel,
@@ -23,6 +25,8 @@ class MagazineVolume {
   final String description;
   final int readingMinutes;
   final List<MagazineChapter> chapters;
+  final String category;
+  final String coverColorHex;
   final String? pdfPath;
   final List<String> pageImages;
   final String? issueLabel;
@@ -48,6 +52,8 @@ class MagazineVolume {
                 MagazineChapter.fromJson(chapter as Map<String, dynamic>),
           )
           .toList(),
+      category: json['category'] as String? ?? 'General',
+      coverColorHex: json['cover_color'] as String? ?? '#8F2020',
       pdfPath: json['pdf_path'] as String?,
       pageImages: (json['page_images'] as List<dynamic>? ?? const [])
           .map((path) => path.toString())
@@ -69,6 +75,8 @@ class MagazineVolume {
         'description': description,
         'reading_minutes': readingMinutes,
         'chapters': chapters.map((chapter) => chapter.toJson()).toList(),
+        'category': category,
+        'cover_color': coverColorHex,
         if (pdfPath != null) 'pdf_path': pdfPath,
         if (pageImages.isNotEmpty) 'page_images': pageImages,
         if (issueLabel != null) 'issue_label': issueLabel,
@@ -84,6 +92,8 @@ class MagazineVolume {
     String? description,
     int? readingMinutes,
     List<MagazineChapter>? chapters,
+    String? category,
+    String? coverColorHex,
     String? pdfPath,
     List<String>? pageImages,
     String? issueLabel,
@@ -99,6 +109,8 @@ class MagazineVolume {
       description: description ?? this.description,
       readingMinutes: readingMinutes ?? this.readingMinutes,
       chapters: chapters ?? this.chapters,
+      category: category ?? this.category,
+      coverColorHex: coverColorHex ?? this.coverColorHex,
       pdfPath: pdfPath ?? this.pdfPath,
       pageImages: pageImages ?? this.pageImages,
       issueLabel: issueLabel ?? this.issueLabel,

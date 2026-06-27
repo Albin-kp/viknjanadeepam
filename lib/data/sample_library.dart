@@ -16,6 +16,8 @@ const sampleLibrary = [
     description:
         'Historical reflections on apostolic memory, early communities, and the roots of faith in Malankara.',
     readingMinutes: 42,
+    category: 'Sabhacharithram',
+    coverColorHex: '#9B2C2C',
     chapters: [
       MagazineChapter(
         kicker: 'Chapter 1',
@@ -42,6 +44,8 @@ const sampleLibrary = [
     description:
         'An introduction to West Syriac worship, literature, music, and the spiritual vocabulary of the Church.',
     readingMinutes: 36,
+    category: 'Kurbana',
+    coverColorHex: '#276749',
     chapters: [
       MagazineChapter(
         kicker: 'Chapter 1',
@@ -63,6 +67,8 @@ const sampleLibrary = [
     description:
         'A historical journey through churches, stone crosses, architecture, and parish life in Kerala.',
     readingMinutes: 48,
+    category: 'Sabhacharithram',
+    coverColorHex: '#9B2C2C',
     chapters: [
       MagazineChapter(
         kicker: 'Chapter 1',
@@ -84,6 +90,8 @@ const sampleLibrary = [
     description:
         'Stories of endurance, ecclesial leadership, migration, education, and service across the centuries.',
     readingMinutes: 39,
+    category: 'Faith Formation',
+    coverColorHex: '#2B6CB0',
     chapters: [
       MagazineChapter(
         kicker: 'Chapter 1',

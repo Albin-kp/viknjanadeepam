@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../download/pdf_download.dart';
 import '../data/sample_library.dart';
 import '../models/magazine_volume.dart';
 import '../services/bookmark_service.dart';
@@ -21,6 +22,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   int _selectedTab = 0;
   int _selectedNavigation = 0;
   int? _selectedYear;
+  String? _selectedCategory;
   final _catalogService = CatalogService();
   final _bookmarkService = BookmarkService.instance;
   late List<MagazineVolume> _volumes;
@@ -28,12 +30,32 @@ class _LibraryScreenState extends State<LibraryScreen> {
   List<int> get _years => _volumes.map((volume) => volume.year).toSet().toList()
     ..sort((a, b) => b.compareTo(a));
 
+  List<MagazineVolume> get _filteredLibraryVolumes {
+    if (_selectedYear == null) return _volumes;
+    return _volumes.where((volume) => volume.year == _selectedYear).toList();
+  }
+
+  List<_CategorySummary> get _categories {
+    final grouped = <String, List<MagazineVolume>>{};
+    for (final volume in _filteredLibraryVolumes) {
+      final category =
+          volume.category.trim().isEmpty ? 'General' : volume.category.trim();
+      grouped.putIfAbsent(category, () => []).add(volume);
+    }
+    return grouped.entries
+        .map((entry) => _CategorySummary(entry.key, entry.value))
+        .toList();
+  }
+
   List<MagazineVolume> get _visibleVolumes {
     if (_selectedTab == 1 || _selectedNavigation == 1) {
       return _volumes.where(_bookmarkService.contains).toList();
     }
-    if (_selectedYear == null) return _volumes;
-    return _volumes.where((volume) => volume.year == _selectedYear).toList();
+    final volumes = _filteredLibraryVolumes;
+    if (_selectedCategory == null) return volumes;
+    return volumes
+        .where((volume) => volume.category.trim() == _selectedCategory)
+        .toList();
   }
 
   @override
@@ -63,6 +85,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
         setState(() {
           _volumes = catalogVolumes;
           _selectedYear = null;
+          _selectedCategory = null;
         });
       }
     } catch (error, stackTrace) {
@@ -95,7 +118,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     child: Column(
                       children: [
                         Text(
-                          'വിക്ഞാനദീപം',
+                          'വിജ്ഞാന ദീപം',
                           key: Key('app-heading'),
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -134,12 +157,15 @@ class _LibraryScreenState extends State<LibraryScreen> {
               children: [
                 _LibraryTab(
                   label: _selectedYear == null
-                      ? 'All Volumes'
-                      : '${_selectedYear!}',
+                      ? (_selectedCategory ?? 'Categories')
+                      : (_selectedCategory == null
+                          ? '${_selectedYear!}'
+                          : '$_selectedCategory'),
                   selected: _selectedTab == 0,
                   onTap: () => setState(() {
                     _selectedTab = 0;
                     _selectedNavigation = 0;
+                    _selectedCategory = null;
                   }),
                   compact: compact,
                 ),
@@ -156,38 +182,110 @@ class _LibraryScreenState extends State<LibraryScreen> {
             ),
             Container(height: 1, color: Colors.white.withValues(alpha: .08)),
             Expanded(
-              child: _visibleVolumes.isEmpty &&
-                      (_selectedTab == 1 || _selectedNavigation == 1)
-                  ? const _EmptyBookmarks()
-                  : RefreshIndicator(
+              child: _selectedTab == 0 &&
+                      _selectedNavigation == 0 &&
+                      _selectedCategory == null
+                  ? RefreshIndicator(
                       onRefresh: _loadCatalog,
                       child: GridView.builder(
                         padding: EdgeInsets.fromLTRB(
-                          compact ? 8 : 11,
-                          compact ? 10 : 14,
-                          compact ? 8 : 11,
+                          compact ? 12 : 18,
+                          compact ? 14 : 20,
+                          compact ? 12 : 18,
                           compact ? 92 : 118,
                         ),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           mainAxisSpacing: compact ? 10 : 14,
                           crossAxisSpacing: compact ? 10 : 14,
-                          childAspectRatio: compact ? .7 : .68,
+                          childAspectRatio: compact ? 1.06 : 1.15,
                         ),
-                        itemCount: _visibleVolumes.length,
+                        itemCount: _categories.length,
                         itemBuilder: (context, index) {
-                          final volume = _visibleVolumes[index];
-                          return _VolumeTile(
-                            volume: volume,
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                builder: (_) => ReaderScreen(volume: volume),
-                              ),
-                            ),
+                          final category = _categories[index];
+                          return _CategoryTile(
+                            category: category,
+                            onTap: () => setState(() {
+                              _selectedCategory = category.name;
+                            }),
                           );
                         },
                       ),
-                    ),
+                    )
+                  : _visibleVolumes.isEmpty &&
+                          (_selectedTab == 1 || _selectedNavigation == 1)
+                      ? const _EmptyBookmarks()
+                      : RefreshIndicator(
+                          onRefresh: _loadCatalog,
+                          child: CustomScrollView(
+                            slivers: [
+                              if (_selectedCategory != null &&
+                                  _selectedTab == 0 &&
+                                  _selectedNavigation == 0)
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                      compact ? 8 : 11,
+                                      compact ? 10 : 14,
+                                      compact ? 8 : 11,
+                                      0,
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: TextButton.icon(
+                                        onPressed: () => setState(() {
+                                          _selectedCategory = null;
+                                        }),
+                                        icon: const Icon(
+                                          Icons.arrow_back_rounded,
+                                          size: 18,
+                                        ),
+                                        label: const Text('Categories'),
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              SliverPadding(
+                                padding: EdgeInsets.fromLTRB(
+                                  compact ? 8 : 11,
+                                  _selectedCategory == null
+                                      ? (compact ? 10 : 14)
+                                      : 6,
+                                  compact ? 8 : 11,
+                                  compact ? 92 : 118,
+                                ),
+                                sliver: SliverGrid.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: compact ? 10 : 14,
+                                    crossAxisSpacing: compact ? 10 : 14,
+                                    childAspectRatio: compact ? .7 : .68,
+                                  ),
+                                  itemCount: _visibleVolumes.length,
+                                  itemBuilder: (context, index) {
+                                    final volume = _visibleVolumes[index];
+                                    return _VolumeTile(
+                                      volume: volume,
+                                      onTap: () => Navigator.of(context).push(
+                                        MaterialPageRoute<void>(
+                                          builder: (_) =>
+                                              ReaderScreen(volume: volume),
+                                        ),
+                                      ),
+                                      onDownload: volume.pdfPath == null
+                                          ? null
+                                          : () => _downloadVolume(volume),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
             ),
           ],
         ),
@@ -205,10 +303,26 @@ class _LibraryScreenState extends State<LibraryScreen> {
           setState(() {
             _selectedNavigation = index;
             _selectedTab = index == 1 ? 1 : 0;
+            if (index == 0) _selectedCategory = null;
           });
         },
       ),
     );
+  }
+
+  void _downloadVolume(MagazineVolume volume) {
+    final path = volume.pdfPath;
+    if (path == null) return;
+    final downloaded = downloadPdfFile(
+      path,
+      'vijnanadeepam-${volume.year}-serial-${volume.number}.pdf',
+    );
+    if (!downloaded && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('PDF download is available on the web app.')),
+      );
+    }
   }
 
   void _showYearFilter() {
@@ -244,6 +358,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 onTap: () {
                   setState(() {
                     _selectedYear = null;
+                    _selectedCategory = null;
                     _selectedTab = 0;
                     _selectedNavigation = 0;
                   });
@@ -263,6 +378,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   onTap: () {
                     setState(() {
                       _selectedYear = year;
+                      _selectedCategory = null;
                       _selectedTab = 0;
                       _selectedNavigation = 0;
                     });
@@ -271,6 +387,117 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CategorySummary {
+  const _CategorySummary(this.name, this.volumes);
+
+  final String name;
+  final List<MagazineVolume> volumes;
+
+  int get count => volumes.length;
+
+  Color get color => _readColor(volumes.first.coverColorHex);
+
+  static Color _readColor(String hex) {
+    final normalized = hex.trim().replaceFirst('#', '');
+    final value = int.tryParse(
+      normalized.length == 6 ? 'FF$normalized' : normalized,
+      radix: 16,
+    );
+    return Color(value ?? 0xFF8F2020);
+  }
+}
+
+class _CategoryTile extends StatelessWidget {
+  const _CategoryTile({
+    required this.category,
+    required this.onTap,
+  });
+
+  final _CategorySummary category;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width <= 430;
+    final color = category.color;
+    return Material(
+      key: Key('category-${category.name}'),
+      color: _LibraryScreenState._surface,
+      borderRadius: BorderRadius.circular(13),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    color.withValues(alpha: .95),
+                    Color.lerp(color, Colors.black, .44)!,
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              right: compact ? -12 : -8,
+              bottom: compact ? -18 : -14,
+              child: Icon(
+                Icons.menu_book_rounded,
+                color: Colors.white.withValues(alpha: .12),
+                size: compact ? 92 : 112,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(compact ? 14 : 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.auto_stories_rounded,
+                    color: Colors.white.withValues(alpha: .9),
+                    size: compact ? 25 : 30,
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        category.name,
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: compact ? 18 : 21,
+                          height: 1.08,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '${category.count} ${category.count == 1 ? 'book' : 'books'}',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: .76),
+                      fontSize: compact ? 12 : 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -370,10 +597,15 @@ class _LibraryTab extends StatelessWidget {
 }
 
 class _VolumeTile extends StatelessWidget {
-  const _VolumeTile({required this.volume, required this.onTap});
+  const _VolumeTile({
+    required this.volume,
+    required this.onTap,
+    this.onDownload,
+  });
 
   final MagazineVolume volume;
   final VoidCallback onTap;
+  final VoidCallback? onDownload;
 
   @override
   Widget build(BuildContext context) {
@@ -435,7 +667,7 @@ class _VolumeTile extends StatelessWidget {
                                     SizedBox(width: compact ? 3 : 4),
                                     Flexible(
                                       child: Text(
-                                        'വിക്ഞാനദീപം',
+                                        'വിജ്ഞാന ദീപം',
                                         maxLines: 1,
                                         overflow: TextOverflow.clip,
                                         textAlign: TextAlign.center,
@@ -540,17 +772,41 @@ class _VolumeTile extends StatelessWidget {
                 ),
               ),
               SizedBox(height: compact ? 8 : 12),
-              Text(
-                volume.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: compact ? 12.5 : 15,
-                  height: compact ? 1.12 : 1.18,
-                  fontWeight: FontWeight.w700,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Text(
+                      volume.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: compact ? 12.5 : 15,
+                        height: compact ? 1.12 : 1.18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  if (onDownload != null) ...[
+                    SizedBox(width: compact ? 2 : 4),
+                    IconButton(
+                      key: Key('download-volume-${volume.number}'),
+                      tooltip: 'Download PDF',
+                      onPressed: onDownload,
+                      visualDensity: VisualDensity.compact,
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints.tightFor(
+                        width: compact ? 28 : 32,
+                        height: compact ? 28 : 32,
+                      ),
+                      iconSize: compact ? 18 : 20,
+                      color: _LibraryScreenState._accent,
+                      icon: const Icon(Icons.download_rounded),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),

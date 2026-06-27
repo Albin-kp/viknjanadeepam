@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
+import '../download/pdf_download.dart';
 import '../main.dart';
 import '../models/magazine_volume.dart';
 import '../services/bookmark_service.dart';
@@ -92,6 +93,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
               onPressed: _showReadingSettings,
               icon: const Icon(Icons.text_fields_rounded),
             ),
+          if (widget.volume.pdfPath != null)
+            IconButton(
+              tooltip: 'Download PDF',
+              onPressed: _downloadPdf,
+              icon: const Icon(Icons.download_rounded),
+            ),
           IconButton(
             tooltip: _bookmarked ? 'Remove bookmark' : 'Bookmark',
             onPressed: () => _bookmarkService.toggle(widget.volume),
@@ -170,6 +177,21 @@ class _ReaderScreenState extends State<ReaderScreen> {
               ),
             ),
     );
+  }
+
+  void _downloadPdf() {
+    final path = widget.volume.pdfPath;
+    if (path == null) return;
+    final downloaded = downloadPdfFile(
+      path,
+      'vijnanadeepam-${widget.volume.year}-serial-${widget.volume.number}.pdf',
+    );
+    if (!downloaded && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('PDF download is available on the web app.')),
+      );
+    }
   }
 
   void _showContents() {

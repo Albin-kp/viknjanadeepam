@@ -8,6 +8,8 @@
     "description": "",
     "reading_minutes": 30,
     "chapters": [],
+    "category": "Sabhacharithram",
+    "cover_color": "#9B2C2C",
     "published": true,
     "pdf_path": "assets/books/volume-1782039018488-original.pdf",
     "page_images": [
@@ -31,6 +33,8 @@
     "description": "",
     "reading_minutes": 30,
     "chapters": [],
+    "category": "Kurbana",
+    "cover_color": "#276749",
     "published": true,
     "pdf_path": "assets/books/volume-1782038903389-original.pdf",
     "page_images": [
@@ -54,6 +58,8 @@
     "description": "",
     "reading_minutes": 30,
     "chapters": [],
+    "category": "Sabhacharithram",
+    "cover_color": "#9B2C2C",
     "published": true,
     "pdf_path": "assets/books/volume-1782038650831-original.pdf",
     "page_images": [
@@ -77,6 +83,8 @@
     "description": "September",
     "reading_minutes": 30,
     "chapters": [],
+    "category": "Faith Formation",
+    "cover_color": "#2B6CB0",
     "published": true,
     "pdf_path": "assets/books/volume-1782039904524-original.pdf",
     "page_images": [
@@ -100,6 +108,8 @@
     "description": "",
     "reading_minutes": 30,
     "chapters": [],
+    "category": "Kurbana",
+    "cover_color": "#276749",
     "published": true,
     "pdf_path": "assets/books/volume-1782038802047-original.pdf",
     "page_images": [
@@ -123,6 +133,8 @@
     "description": "",
     "reading_minutes": 30,
     "chapters": [],
+    "category": "Sabhacharithram",
+    "cover_color": "#9B2C2C",
     "published": true,
     "pdf_path": "assets/books/volume-1782041865498-original.pdf",
     "page_images": [
@@ -155,6 +167,8 @@
         ]
       }
     ],
+    "category": "Faith Formation",
+    "cover_color": "#2B6CB0",
     "published": true,
     "pdf_path": "assets/books/volume-1781967123575-original.pdf",
     "page_images": [
@@ -178,6 +192,8 @@
     "description": "",
     "reading_minutes": 30,
     "chapters": [],
+    "category": "Kurbana",
+    "cover_color": "#276749",
     "published": true,
     "pdf_path": "assets/books/volume-1782039083201-original.pdf",
     "page_images": [
@@ -201,6 +217,8 @@
     "description": "",
     "reading_minutes": 30,
     "chapters": [],
+    "category": "Sabhacharithram",
+    "cover_color": "#9B2C2C",
     "published": true,
     "pdf_path": "assets/books/volume-1782038749072-original.pdf",
     "page_images": [

@@ -71,7 +71,7 @@
   <div id="install-card" role="dialog" aria-label="Install Vijnana Deepam">
     <img src="icons/vijnanadeepam-192.png" alt="">
     <div id="install-copy">
-      <strong>Install വിക്ഞാനദീപം</strong>
+      <strong>Install വിജ്ഞാന ദീപം</strong>
       <span>Read volumes from your phone home screen.</span>
     </div>
     <button id="install-action" type="button">Install</button>
@@ -85,9 +85,16 @@
       if (standalone || localStorage.getItem(seenKey)) return;
 
       let installPrompt = null;
+      const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
       const card = document.getElementById('install-card');
       const action = document.getElementById('install-action');
       const close = document.getElementById('install-close');
+      const copy = document.querySelector('#install-copy span');
+
+      if (isIos) {
+        action.textContent = 'How to install';
+        copy.textContent = 'In Safari, tap Share → Add to Home Screen.';
+      }
 
       function rememberAndHide() {
         localStorage.setItem(seenKey, 'true');
@@ -111,8 +118,10 @@
           installPrompt.prompt();
           await installPrompt.userChoice;
           installPrompt = null;
+        } else if (isIos) {
+          alert('On iPhone or iPad: open this website in Safari, tap the Share button, then choose “Add to Home Screen”.');
         } else {
-          alert('Open the browser menu and choose “Add to Home screen” or “Install app”.');
+          alert('On Android: open the browser menu and choose “Install app” or “Add to Home screen”.');
         }
         rememberAndHide();
       });
