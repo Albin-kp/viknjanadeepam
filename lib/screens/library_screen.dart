@@ -400,17 +400,6 @@ class _CategorySummary {
   final List<MagazineVolume> volumes;
 
   int get count => volumes.length;
-
-  Color get color => _readColor(volumes.first.coverColorHex);
-
-  static Color _readColor(String hex) {
-    final normalized = hex.trim().replaceFirst('#', '');
-    final value = int.tryParse(
-      normalized.length == 6 ? 'FF$normalized' : normalized,
-      radix: 16,
-    );
-    return Color(value ?? 0xFF8F2020);
-  }
 }
 
 class _CategoryTile extends StatelessWidget {
@@ -425,7 +414,6 @@ class _CategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final compact = MediaQuery.sizeOf(context).width <= 430;
-    final color = category.color;
     return Material(
       key: Key('category-${category.name}'),
       color: _LibraryScreenState._surface,
@@ -436,62 +424,94 @@ class _CategoryTile extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            DecoratedBox(
+            Image.asset(
+              'assets/images/heritage-cover.png',
+              fit: BoxFit.cover,
+            ),
+            const DecoratedBox(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    color.withValues(alpha: .95),
-                    Color.lerp(color, Colors.black, .44)!,
-                  ],
+                color: Color(0x66000000),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: compact ? 14 : 18),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: compact ? 8 : 12,
+                    vertical: compact ? 8 : 11,
+                  ),
+                  color: const Color(0xC50C1118),
+                  child: Text(
+                    category.name,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: const Color(0xFFE5C477),
+                      fontSize: compact ? 18 : 22,
+                      height: 1.08,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                 ),
               ),
             ),
             Positioned(
-              right: compact ? -12 : -8,
-              bottom: compact ? -18 : -14,
-              child: Icon(
-                Icons.menu_book_rounded,
-                color: Colors.white.withValues(alpha: .12),
-                size: compact ? 92 : 112,
+              left: compact ? 10 : 14,
+              right: compact ? 10 : 14,
+              bottom: compact ? 10 : 14,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: compact ? 6 : 8,
+                  vertical: compact ? 4 : 5,
+                ),
+                color: const Color(0xA60C1118),
+                child: Text(
+                  '${category.count} ${category.count == 1 ? 'book' : 'books'}',
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: .84),
+                    fontSize: compact ? 12 : 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.all(compact ? 14 : 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Positioned(
+              left: compact ? 9 : 12,
+              right: compact ? 9 : 12,
+              top: compact ? 10 : 14,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.auto_stories_rounded,
-                    color: Colors.white.withValues(alpha: .9),
-                    size: compact ? 25 : 30,
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        category.name,
-                        maxLines: 1,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: compact ? 18 : 21,
-                          height: 1.08,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(3),
+                    child: Image.asset(
+                      'assets/images/vijnanadeepam-logo.png',
+                      width: compact ? 24 : 30,
+                      height: compact ? 24 : 30,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '${category.count} ${category.count == 1 ? 'book' : 'books'}',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: .76),
-                      fontSize: compact ? 12 : 13,
-                      fontWeight: FontWeight.w700,
+                  SizedBox(width: compact ? 4 : 6),
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'വിജ്ഞാന ദീപം',
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: const Color(0xFF080604),
+                          fontSize: compact ? 14 : 17,
+                          height: 1,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
                     ),
                   ),
                 ],
