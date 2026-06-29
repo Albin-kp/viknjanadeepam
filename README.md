@@ -1,6 +1,6 @@
-# Vijnana Deepam
+# Viknjana Deepam
 
-A Flutter digital archive and ebook reader for the annual Vijnana Deepam
+A Flutter digital archive and ebook reader for the annual Viknjana Deepam
 magazine.
 
 ## Features
