@@ -32,7 +32,7 @@ update controls.
    this repository.
 4. Select **Publish to app**.
 
-The editor commits [`assets/data/catalog.json`](assets/data/catalog.json) to
+The editor commits  to
 the repository. GitHub Pages then rebuilds the reader automatically. The token
 is kept only in the current browser tab.
 
