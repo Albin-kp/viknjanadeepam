@@ -20,7 +20,7 @@ The administration page is available at:
 
 `https://albin-kp.github.io/viknjanadeepam/admin/`
 
-It supports a static password login, structured Malayalam chapter editing,
+It supports a  password login, structured Malayalam chapter editing,
 deleting, backups, and publishing. Public readers never see administration or
 update controls.
 
@@ -36,10 +36,6 @@ The editor commits [`assets/data/catalog.json`](assets/data/catalog.json) to
 the repository. GitHub Pages then rebuilds the reader automatically. The token
 is kept only in the current browser tab.
 
-The default admin password is `VijnanaDeepam@2026`. Set the GitHub Actions
-repository secret `ADMIN_PASSWORD` to replace it. Because the admin page is a
-static site, this password is a convenience lock rather than strong security;
-the GitHub token remains the actual publishing authorization.
 
 ## Run locally
 
