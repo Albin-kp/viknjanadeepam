@@ -232,5 +232,32 @@
       "assets/books/volume-1782038749072-page-008.jpg"
     ],
     "booklet_layout": true
+  },
+  {
+    "id": "volume-1783532838743",
+    "year": 2014,
+    "volume_number": 22,
+    "title": "Serial No - 22",
+    "subtitle": "February",
+    "description": "",
+    "reading_minutes": 24,
+    "chapters": [],
+    "category": "വേദജ്ഞാനം",
+    "cover_color": "#9b2c2c",
+    "published": true,
+    "issue_label": "",
+    "pdf_path": "assets/books/volume-1783532838743-original.pdf",
+    "page_images": [
+      "assets/books/volume-1783532838743-page-001.jpg",
+      "assets/books/volume-1783532838743-page-002.jpg",
+      "assets/books/volume-1783532838743-page-003.jpg",
+      "assets/books/volume-1783532838743-page-004.jpg",
+      "assets/books/volume-1783532838743-page-005.jpg",
+      "assets/books/volume-1783532838743-page-006.jpg",
+      "assets/books/volume-1783532838743-page-007.jpg",
+      "assets/books/volume-1783532838743-page-008.jpg"
+    ],
+    "pdf_layout": "single",
+    "booklet_layout": false
   }
 ]
