@@ -1,27 +1,5 @@
 [
   {
-    "id": "volume-1783533530720",
-    "year": 2026,
-    "volume_number": 125,
-    "title": "test",
-    "subtitle": "",
-    "description": "",
-    "reading_minutes": 30,
-    "chapters": [
-      {
-        "kicker": "അധ്യായം",
-        "title": "test sub cat",
-        "paragraphs": [
-          "test"
-        ]
-      }
-    ],
-    "category": "വി. കൂദാശകൾ/General",
-    "cover_color": "#9b2c2c",
-    "published": true,
-    "issue_label": ""
-  },
-  {
     "id": "volume-1782039018488",
     "year": 2026,
     "volume_number": 52,
@@ -105,9 +83,10 @@
     "description": "September",
     "reading_minutes": 30,
     "chapters": [],
-    "category": "വി. കൂദാശകൾ",
-    "cover_color": "#2B6CB0",
+    "category": "സത്യവിശ്വാസം",
+    "cover_color": "#276749",
     "published": true,
+    "issue_label": "",
     "pdf_path": "assets/books/volume-1782039904524-original.pdf",
     "page_images": [
       "assets/books/volume-1782039904524-page-001.jpg",
@@ -119,6 +98,7 @@
       "assets/books/volume-1782039904524-page-007.jpg",
       "assets/books/volume-1782039904524-page-008.jpg"
     ],
+    "pdf_layout": "imposed",
     "booklet_layout": true
   },
   {
@@ -189,9 +169,10 @@
         ]
       }
     ],
-    "category": "വി. കൂദാശകൾ",
-    "cover_color": "#2B6CB0",
+    "category": "സത്യവിശ്വാസം",
+    "cover_color": "#276749",
     "published": true,
+    "issue_label": "",
     "pdf_path": "assets/books/volume-1781967123575-original.pdf",
     "page_images": [
       "assets/books/volume-1781967123575-page-001.jpg",
@@ -203,6 +184,7 @@
       "assets/books/volume-1781967123575-page-007.jpg",
       "assets/books/volume-1781967123575-page-008.jpg"
     ],
+    "pdf_layout": "imposed",
     "booklet_layout": true
   },
   {
@@ -254,5 +236,32 @@
       "assets/books/volume-1782038749072-page-008.jpg"
     ],
     "booklet_layout": true
+  },
+  {
+    "id": "volume-1783564929899",
+    "year": 2014,
+    "volume_number": 22,
+    "title": "Serial No - 22",
+    "subtitle": "",
+    "description": "",
+    "reading_minutes": 24,
+    "chapters": [],
+    "category": "വേദജ്ഞാനം",
+    "cover_color": "#9b2c2c",
+    "published": true,
+    "issue_label": "",
+    "pdf_path": "assets/books/volume-1783564929899-original.pdf",
+    "page_images": [
+      "assets/books/volume-1783564929899-page-001.jpg",
+      "assets/books/volume-1783564929899-page-002.jpg",
+      "assets/books/volume-1783564929899-page-003.jpg",
+      "assets/books/volume-1783564929899-page-004.jpg",
+      "assets/books/volume-1783564929899-page-005.jpg",
+      "assets/books/volume-1783564929899-page-006.jpg",
+      "assets/books/volume-1783564929899-page-007.jpg",
+      "assets/books/volume-1783564929899-page-008.jpg"
+    ],
+    "pdf_layout": "single",
+    "booklet_layout": false
   }
 ]
