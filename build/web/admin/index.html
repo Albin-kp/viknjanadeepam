@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>വിജ്ഞാന ദീപം Admin</title>
+  <script src="config.js"></script>
+  <style>
+    :root{color-scheme:dark;--bg:#0e1114;--panel:#181d22;--field:#101418;--gold:#c8a55e;--muted:#9ba4ad;--blue:#268bd2;--danger:#6c2929}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,"Noto Sans Malayalam",sans-serif}button,input,textarea,select{font:inherit}.hidden{display:none!important}
+    button{cursor:pointer;border:0}.center{min-height:100vh;display:grid;place-items:center;padding:22px}.card{width:min(440px,100%);background:var(--panel);padding:30px;border:1px solid #ffffff12;border-radius:20px}
+    .brand{font-size:30px;font-weight:850}.eyebrow{margin:5px 0 25px;color:var(--gold);font-size:10px;letter-spacing:1.6px}.muted{color:var(--muted);line-height:1.55}.field{margin:13px 0}.field label{display:block;color:#c7ccd1;font-size:13px;margin-bottom:7px}
+    input,textarea,select{width:100%;padding:12px 13px;color:#fff;background:var(--field);border:1px solid #ffffff12;border-radius:10px;outline:none}textarea{min-height:125px;resize:vertical;line-height:1.5}
+    .primary,.secondary,.danger{padding:11px 16px;border-radius:10px;font-weight:750;color:#fff}.primary{background:var(--blue)}.secondary{background:#ffffff10}.danger{background:var(--danger)}.wide{width:100%}.error{color:#ff9d98;margin-top:10px}.success{color:#75dda6;margin-top:10px}
+    .shell{min-height:100vh}.top{display:flex;align-items:center;gap:16px;padding:21px 26px;border-bottom:1px solid #ffffff10;background:#14191d;position:sticky;top:0;z-index:2}.top .brand{font-size:24px}.top-actions{margin-left:auto;display:flex;gap:9px}.content{max-width:1080px;margin:auto;padding:28px 20px 80px}
+    .intro{display:flex;align-items:end;gap:20px;margin-bottom:20px}.intro h1{margin:0 0 5px}.intro p{margin:0}.list{border:1px solid #ffffff10;border-radius:16px;overflow:hidden;background:var(--panel)}.row{display:grid;grid-template-columns:1fr 90px 150px;align-items:center;gap:15px;padding:16px 18px;border-top:1px solid #ffffff0d}.row:first-child{border:0}.title{font-weight:800}.meta{font-size:13px;color:var(--muted);margin-top:4px}.actions{text-align:right}
+    .category-panel{margin-bottom:22px;padding:18px;background:var(--panel);border:1px solid #ffffff10;border-radius:16px}.category-head{display:flex;gap:14px;align-items:end;margin-bottom:15px}.category-head h2{margin:0 0 4px}.category-parent{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px}.category-parent-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}.category-parent-path{padding:8px 12px;border-radius:999px;background:#101418;border:1px solid #ffffff12;font-size:13px;font-weight:700}.category-actions{margin-left:auto;display:flex;gap:8px}.category-actions button{padding:8px 11px;border-radius:8px}.category-form{display:grid;grid-template-columns:1fr 92px auto;gap:10px;align-items:end;scroll-margin-top:96px}.category-form .field{margin:0}.category-form input,.category-form button{scroll-margin-top:96px}.category-manager{display:grid;grid-template-columns:minmax(260px,1fr) 280px;gap:14px;margin-top:16px}.category-tree{min-height:250px;max-height:430px;overflow:auto;padding:8px;background:#101418;border:1px solid #ffffff12;border-radius:12px}.category-tree ul{list-style:none;margin:0;padding-left:22px}.category-tree>ul{padding-left:0}.category-node{margin:3px 0}.category-row{width:100%;display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:8px;padding:8px 9px;border-radius:8px;background:transparent;color:#fff;text-align:left}.category-row:hover{background:#ffffff0b}.category-row.active{background:#0f3550;outline:1px solid #2d9ce5}.category-caret{width:17px;color:#aab5bf;text-align:center;font-size:12px}.folder-icon{position:relative;width:20px;height:15px;border-radius:2px;background:#c8a55e;box-shadow:inset 0 -5px 0 #a9843d}.folder-icon:before{content:"";position:absolute;left:2px;top:-4px;width:9px;height:5px;border-radius:2px 2px 0 0;background:#d4b777}.folder-name{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.folder-count{color:#9ba4ad;font-size:12px}.category-details{padding:15px;background:#11161b;border:1px solid #ffffff12;border-radius:12px}.category-details h3{margin:0 0 5px;font-size:17px}.category-details .path{word-break:break-word;color:#d7dce0;font-size:13px;line-height:1.45}.category-tools{display:flex;gap:7px;margin-top:14px}.category-tools button{padding:8px 10px;border-radius:8px}.swatch{width:17px;height:17px;border-radius:50%;border:2px solid #ffffff50;flex:0 0 auto}.volume-toolbar{display:flex;align-items:center;gap:12px;margin:18px 0 10px}.volume-toolbar h2{margin:0}.pill{color:#dbe2e8;background:#ffffff10;border-radius:999px;padding:7px 11px;font-size:13px;font-weight:750}
+    dialog{width:min(900px,calc(100% - 20px));max-height:92vh;padding:0;color:#fff;background:#171c21;border:1px solid #ffffff15;border-radius:18px}.editor-head,.editor-foot{display:flex;align-items:center;padding:18px 21px;border-bottom:1px solid #ffffff10}.editor-foot{border-top:1px solid #ffffff10;border-bottom:0}.editor-body{padding:21px;max-height:68vh;overflow:auto}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.chapter{margin-top:15px;padding:16px;background:#20262c;border-radius:13px}.chapter-head{display:flex;align-items:center}.chapter-head button{margin-left:auto}.right{margin-left:auto;display:flex;gap:9px}.token-help{font-size:12px;color:var(--muted);margin-top:7px}
+    .source-box{margin-top:22px;padding:17px;background:#11161b;border:1px solid #ffffff12;border-radius:14px}.source-tabs{display:flex;gap:8px;margin-bottom:12px}.source-tabs button.active{background:var(--blue)}.pdf-status{margin-top:8px;font-size:13px;color:var(--gold)}.check-line{display:flex;gap:9px;align-items:center;color:#d7dce0;font-size:13px}.check-line input{width:auto}
+    @media(max-width:700px){.top{padding:16px}.top .eyebrow{display:none}.top-actions .secondary{display:none}.content{padding:20px 12px 70px}.intro{align-items:start}.intro h1{font-size:23px}.row{grid-template-columns:1fr auto}.row>div:nth-child(2){display:none}.grid,.category-form,.category-manager{grid-template-columns:1fr}.category-head,.volume-toolbar{align-items:start;flex-direction:column}.category-actions{width:100%;margin-left:0}.category-actions button{flex:1}.editor-foot{flex-wrap:wrap;gap:10px}.right{width:100%;margin:0}.right button{flex:1}}
+  </style>
+</head>
+<body>
+  <section id="login" class="center">
+    <form id="login-form" class="card">
+      <div class="brand">വിജ്ഞാന ദീപം</div>
+      <div class="eyebrow">PRIVATE MAGAZINE ADMIN</div>
+      <div class="field"><label>Admin password</label><input id="admin-password" type="password" autocomplete="current-password" required></div>
+      <div id="login-error" class="error"></div>
+      <button class="primary wide">Open admin</button>
+    </form>
+  </section>
+
+  <section id="app" class="shell hidden">
+    <header class="top">
+      <div><div class="brand">വിജ്ഞാന ദീപം</div><div class="eyebrow" style="margin:2px 0 0">MAGAZINE ADMIN</div></div>
+      <div class="top-actions"><button class="secondary" onclick="loadCatalog()">Reload</button><button class="secondary" onclick="logout()">Lock</button><button class="primary" onclick="openEditor()">＋ Add volume</button></div>
+    </header>
+    <main class="content">
+      <div class="intro"><div><h1>Magazine volumes</h1><p class="muted">Enter Malayalam chapters or upload a print-ready booklet PDF.</p></div></div>
+      <section class="category-panel">
+        <div class="category-head">
+          <div><h2>Folders</h2><p class="muted">Select a folder, then add another folder to create a nested path for all readers.</p></div>
+        </div>
+        <div class="category-parent">
+          <span class="category-parent-label">Creating inside</span>
+          <span id="category-parent-path" class="category-parent-path">Top level</span>
+          <div class="category-actions">
+            <button type="button" class="secondary" onclick="selectCategory('')">Root</button>
+            <button id="up-folder-button" type="button" class="secondary" onclick="selectParentCategory()">Up</button>
+          </div>
+        </div>
+        <form class="category-form" onsubmit="addCategory(event)">
+          <div class="field"><label>Folder name</label><input id="new-category-name" placeholder="New folder name"></div>
+          <div class="field"><label>Colour</label><input id="new-category-color" type="color" value="#9B2C2C"></div>
+          <button id="add-folder-button" class="primary">Add folder</button>
+        </form>
+        <div class="category-manager">
+          <div id="category-list" class="category-tree"></div>
+          <aside id="category-details" class="category-details"></aside>
+        </div>
+      </section>
+      <div class="volume-toolbar"><h2 id="volume-heading">All books</h2><span id="volume-count" class="pill"></span><button class="secondary" onclick="selectCategory('')">Show all</button></div>
+      <div id="volume-list" class="list"></div>
+      <div class="card" style="margin-top:20px;width:100%">
+        <h2 style="margin-top:0">Publish changes</h2>
+        <p class="muted">Use a fine-grained GitHub token with <strong>Contents: Read and write</strong> access to this repository. It remains only in this browser tab.</p>
+        <div class="field"><label>GitHub access token</label><input id="github-token" type="password" autocomplete="off" placeholder="github_pat_…"></div>
+        <div class="token-help">Repository: Albin-kp/viknjanadeepam · Files: assets/data/catalog.json and assets/data/categories.json</div>
+        <div style="display:flex;gap:10px;margin-top:16px"><button id="publish-button" class="primary" onclick="publishCatalog()">Publish to app</button><button class="secondary" onclick="downloadCatalog()">Download backup</button></div>
+        <div id="publish-message"></div>
+      </div>
+    </main>
+  </section>
+
+  <dialog id="editor">
+    <form id="volume-form">
+      <header class="editor-head"><h2 id="editor-title" style="margin:0">Add volume</h2></header>
+      <div class="editor-body">
+        <input id="volume-id" type="hidden">
+        <div class="grid">
+          <div class="field"><label>Year</label><input id="year" type="number" required></div>
+          <div class="field"><label>Volume number</label><input id="number" type="number" required></div>
+          <div class="field"><label>Reading minutes</label><input id="minutes" type="number" value="30" required></div>
+        </div>
+        <div class="field"><label>Malayalam volume title</label><input id="title" required></div>
+        <div class="field"><label>Malayalam subtitle</label><input id="subtitle"></div>
+        <div class="field"><label>Malayalam description</label><textarea id="description"></textarea></div>
+        <div class="grid">
+          <div class="field"><label>Category</label><select id="category" onchange="syncCategoryColor()"></select></div>
+          <div class="field"><label>New category name</label><input id="category-custom" placeholder="Use only when adding a new category"></div>
+          <div class="field"><label>Category cover colour</label><input id="cover-color" type="color" value="#8F2020"></div>
+        </div>
+        <div class="source-box">
+          <div class="source-tabs">
+            <button id="chapters-tab" type="button" class="secondary active" onclick="setSourceMode('chapters')">Malayalam chapters</button>
+            <button id="pdf-tab" type="button" class="secondary" onclick="setSourceMode('pdf')">Upload booklet PDF</button>
+          </div>
+          <div id="chapters-source">
+            <div style="display:flex;align-items:center"><h3 style="margin:0">Chapters</h3><button type="button" class="secondary" style="margin-left:auto" onclick="addChapter()">＋ Add chapter</button></div>
+            <div id="chapters"></div>
+          </div>
+          <div id="pdf-source" class="hidden">
+            <div class="field"><label>Booklet PDF</label><input id="pdf-file" type="file" accept="application/pdf,.pdf" onchange="inspectPdfHeader()"></div>
+            <div class="field">
+              <label>PDF page type</label>
+              <select id="pdf-layout" onchange="updatePdfHelp()">
+                <option value="single">Single pages in reading order (1, 2, 3…)</option>
+                <option value="single_trimmed">Centered single pages with wide side margins</option>
+                <option value="imposed">Print booklet sheets (8–1, 2–7, 6–3…)</option>
+                <option value="spreads">Two-page spreads in reading order</option>
+              </select>
+            </div>
+            <div id="pdf-layout-help" class="muted"></div>
+            <div id="pdf-status" class="pdf-status">The PDF will be converted into phone-readable pages when you publish.</div>
+          </div>
+        </div>
+        <div id="save-error" class="error"></div>
+      </div>
+      <footer class="editor-foot"><label><input id="published" type="checkbox" style="width:auto" checked> Published</label><div class="right"><button type="button" class="secondary" onclick="editor.close()">Cancel</button><button type="submit" class="primary">Save volume</button></div></footer>
+    </form>
+  </dialog>
+
+  <template id="chapter-template"><div class="chapter"><div class="chapter-head"><strong>Chapter</strong><button type="button" class="danger" onclick="this.closest('.chapter').remove()">Remove</button></div><div class="field"><label>Chapter label</label><input class="kicker" value="അധ്യായം"></div><div class="field"><label>Malayalam chapter title</label><input class="chapter-title"></div><div class="field"><label>Malayalam content</label><textarea class="paragraphs" placeholder="Separate paragraphs with a blank line."></textarea></div></div></template>
+
+  <script>
+    const config=window.ADMIN_CONFIG||{};
+    const expectedPassword=config.adminPassword||'VijnanaDeepam@2026';
+    const owner='Albin-kp',repo='viknjanadeepam',branch='main',catalogPath='assets/data/catalog.json',categoryPath='assets/data/categories.json';
+    const login=document.querySelector('#login'),app=document.querySelector('#app'),editor=document.querySelector('#editor');
+    let volumes=[],adminCategories=[],sourceMode='chapters',pdfJsPromise,selectedCategory='';
+    const pendingPdfs=new Map();
+
+    document.querySelector('#login-form').onsubmit=e=>{e.preventDefault();if(document.querySelector('#admin-password').value!==expectedPassword){document.querySelector('#login-error').textContent='Incorrect password.';return}sessionStorage.setItem('vd-admin','open');showApp()};
+    if(sessionStorage.getItem('vd-admin')==='open')showApp();
+    function showApp(){login.classList.add('hidden');app.classList.remove('hidden');loadCatalog()}
+    function logout(){sessionStorage.removeItem('vd-admin');location.reload()}
+
+    async function loadCatalog(){
+      const list=document.querySelector('#volume-list');list.innerHTML='<div class="row">Loading…</div>';
+      try{
+        const response=await fetch('../assets/assets/data/catalog.json?'+Date.now(),{cache:'no-store'});
+        if(!response.ok)throw new Error('Could not load catalogue.');
+        volumes=await response.json();
+        const categoryResponse=await fetch('../assets/assets/data/categories.json?'+Date.now(),{cache:'no-store'}).catch(()=>null);
+        adminCategories=categoryResponse?.ok?await categoryResponse.json():[];
+        volumes.sort((a,b)=>b.year-a.year||b.volume_number-a.volume_number);renderCategories();renderList();
+      }catch(error){list.innerHTML='<div class="row error">'+escapeHtml(error.message)+'</div>'}
+    }
+    function normalizedCategory(value){return (value||'General').trim()||'General'}
+    function categoryLabel(name){return normalizedCategory(name).split('/').pop()}
+    function categoryDepth(name){return Math.max(0,normalizedCategory(name).split('/').length-1)}
+    function childCategoryName(parent,name){const clean=normalizedCategory(name);return parent?`${parent}/${clean}`:clean}
+    function categoryColor(value){return /^#[0-9a-f]{6}$/i.test(value||'')?value:'#8F2020'}
+    function parentCategory(name){const parts=normalizedCategory(name).split('/');parts.pop();return parts.join('/')}
+    function getCategories(){
+      const map=new Map();
+      volumes.forEach(v=>{
+        const name=normalizedCategory(v.category);
+        if(!map.has(name))map.set(name,{name,color:categoryColor(v.cover_color),count:0});
+        const item=map.get(name);item.count++;if(!v.cover_color)v.cover_color=item.color;
+      });
+      adminCategories.forEach(category=>{
+        if(!map.has(category.name))map.set(category.name,{...category,count:0});
+      });
+      return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name));
+    }
+    function buildCategoryTree(categories){
+      const root={children:new Map()};
+      categories.forEach(category=>{
+        let node=root,path='';
+        normalizedCategory(category.name).split('/').forEach((part,index,parts)=>{
+          path=path?`${path}/${part}`:part;
+          if(!node.children.has(part))node.children.set(part,{name:path,label:part,color:category.color,count:0,directCount:0,children:new Map()});
+          node=node.children.get(part);
+          if(index===parts.length-1){node.color=category.color;node.directCount=category.count;node.count+=category.count}
+          else node.count+=category.count;
+        });
+      });
+      const sortNode=node=>[...node.children.values()].sort((a,b)=>a.label.localeCompare(b.label)).map(child=>({...child,children:sortNode(child)}));
+      return sortNode(root);
+    }
+    function renderCategoryNodes(nodes){
+      if(!nodes.length)return '<div class="meta" style="padding:10px">No folders yet.</div>';
+      return `<ul>${nodes.map(node=>{
+        const hasChildren=node.children.length>0;
+        return `<li class="category-node"><button type="button" class="category-row ${selectedCategory===node.name?'active':''}" onclick="selectCategory('${escapeJs(node.name)}')"><span class="category-caret">${hasChildren?'▾':''}</span><span class="folder-icon" style="background:${escapeHtml(node.color)}"></span><span class="folder-name">${escapeHtml(node.label)}</span><span class="folder-count">${node.count}</span></button>${hasChildren?renderCategoryNodes(node.children):''}</li>`;
+      }).join('')}</ul>`;
+    }
+    function renderCategories(){
+      const categories=getCategories();
+      const list=document.querySelector('#category-list');
+      list.innerHTML=`<ul><li class="category-node"><button type="button" class="category-row ${selectedCategory===''?'active':''}" onclick="selectCategory('')"><span class="category-caret">▾</span><span class="folder-icon" style="background:#268bd2"></span><span class="folder-name">All books</span><span class="folder-count">${volumes.length}</span></button>${renderCategoryNodes(buildCategoryTree(categories))}</li></ul>`;
+      renderCategoryDetails(categories);
+      updateFolderComposer();
+      refreshCategorySelect();
+    }
+    function selectCategory(name){selectedCategory=name;renderCategories();renderList()}
+    function selectParentCategory(){if(!selectedCategory){return}selectCategory(parentCategory(selectedCategory))}
+    function updateFolderComposer(){
+      const parent=document.querySelector('#category-parent-path');
+      const input=document.querySelector('#new-category-name');
+      const button=document.querySelector('#add-folder-button');
+      const up=document.querySelector('#up-folder-button');
+      const nested=selectedCategory!==''&&selectedCategory!=='General';
+      parent.textContent=nested?selectedCategory:'Top level';
+      input.placeholder=nested?'Subfolder name':'Top-level folder name';
+      button.textContent=nested?'Add subfolder':'Add folder';
+      if(up)up.disabled=!selectedCategory;
+    }
+    function renderCategoryDetails(categories){
+      const details=document.querySelector('#category-details');
+      if(!selectedCategory){
+        details.innerHTML=`<h3>Top level</h3><div class="path">Create first-level folders here, or select any folder in the tree to create inside it.</div><div class="meta" style="margin-top:12px">${categories.length} folders · ${volumes.length} books</div>`;
+        return;
+      }
+      const current=categories.find(c=>c.name===selectedCategory)||{name:selectedCategory,color:'#8F2020',count:0};
+      const children=categories.filter(c=>parentCategory(c.name)===selectedCategory).length;
+      details.innerHTML=`<h3>${escapeHtml(categoryLabel(selectedCategory))}</h3><div class="path">${escapeHtml(selectedCategory)}</div><div class="meta" style="margin-top:12px">${current.count} direct ${current.count===1?'book':'books'} · ${children} ${children===1?'subfolder':'subfolders'}</div><div class="category-tools"><button class="secondary" onclick="editCategory('${escapeJs(selectedCategory)}')">Edit folder</button><button class="danger" onclick="deleteCategory('${escapeJs(selectedCategory)}')">Delete branch</button></div>`;
+    }
+    function addCategory(event){
+      event.preventDefault();
+      const name=childCategoryName(selectedCategory,document.querySelector('#new-category-name').value);
+      const color=document.querySelector('#new-category-color').value;
+      if(getCategories().some(c=>c.name.toLowerCase()===name.toLowerCase())){showMessage('That folder already exists.','error');return}
+      adminCategories.push({name,color});
+      document.querySelector('#new-category-name').value='';
+      selectedCategory=name;renderCategories();renderList();showMessage('Folder added locally. Add or move books into it, then publish.','success');
+    }
+    function editCategory(name){
+      const current=getCategories().find(c=>c.name===name);if(!current)return;
+      const nextName=prompt('Category name',current.name);if(!nextName)return;
+      const cleanName=normalizedCategory(nextName);
+      const nextColor=prompt('Category colour hex',current.color)||current.color;
+      if(cleanName.toLowerCase()!==name.toLowerCase()&&getCategories().some(c=>c.name.toLowerCase()===cleanName.toLowerCase())){showMessage('Another category already uses that name.','error');return}
+      const renamePath=value=>value===name||value.startsWith(name+'/')?cleanName+value.slice(name.length):value;
+      volumes=volumes.map(v=>{const category=normalizedCategory(v.category);return category===name||category.startsWith(name+'/' )?{...v,category:renamePath(category),cover_color:categoryColor(nextColor)}:v});
+      adminCategories=adminCategories.map(c=>{const category=normalizedCategory(c.name);return category===name||category.startsWith(name+'/')?{...c,name:renamePath(category),color:c.name===name?categoryColor(nextColor):c.color}:c});
+      selectedCategory=selectedCategory===name?cleanName:selectedCategory;renderCategories();renderList();showMessage('Category updated locally. Publish to apply it.','success');
+    }
+    function deleteCategory(name){
+      const count=volumes.filter(v=>{const category=normalizedCategory(v.category);return category===name||category.startsWith(name+'/')}).length;
+      if(!confirm(`Move ${count} book(s) from ${name} and its subfolders to General? Publish is still required after this.`))return;
+      volumes=volumes.map(v=>{const category=normalizedCategory(v.category);return category===name||category.startsWith(name+'/')?{...v,category:'General',cover_color:'#8F2020'}:v});
+      adminCategories=adminCategories.filter(c=>{const category=normalizedCategory(c.name);return category!==name&&!category.startsWith(name+'/')});
+      selectedCategory='';renderCategories();renderList();showMessage('Category removed locally and books moved to General.','success');
+    }
+    function refreshCategorySelect(){
+      const select=document.querySelector('#category');if(!select)return;
+      const current=select.value;
+      select.innerHTML=getCategories().map(c=>`<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('')+'<option value="__new__">＋ New category</option>';
+      if([...select.options].some(option=>option.value===current))select.value=current;
+    }
+    function syncCategoryColor(){
+      const select=document.querySelector('#category'),custom=document.querySelector('#category-custom'),color=document.querySelector('#cover-color');
+      custom.disabled=select.value!=='__new__';
+      if(select.value==='__new__'){custom.focus();return}
+      const category=getCategories().find(c=>c.name===select.value);
+      if(category)color.value=category.color;
+    }
+    function renderList(){
+      const list=document.querySelector('#volume-list');
+      const visible=selectedCategory?volumes.filter(v=>normalizedCategory(v.category)===selectedCategory):volumes;
+      document.querySelector('#volume-heading').textContent=selectedCategory?selectedCategory:'All books';
+      document.querySelector('#volume-count').textContent=`${visible.length} ${visible.length===1?'book':'books'}`;
+      if(!visible.length){list.innerHTML='<div class="row"><div><div class="title">No books in this category</div><div class="meta">Add a volume or move an existing book here.</div></div></div>';return}
+      list.innerHTML=visible.map(v=>`<div class="row"><div><div class="title">${escapeHtml(v.title)}</div><div class="meta"><span class="swatch" style="display:inline-block;vertical-align:-3px;background:${escapeHtml(categoryColor(v.cover_color))}"></span> ${escapeHtml(normalizedCategory(v.category))} · ${escapeHtml(v.subtitle||'')} · Volume ${v.volume_number} · ${v.page_images?.length?'PDF':'Chapters'}${v.published===false?' · Draft':''}</div></div><div>${v.year}</div><div class="actions"><button class="secondary" onclick="openEditor('${v.id}')">Edit</button> <button class="danger" onclick="deleteVolume('${v.id}')">Delete</button></div></div>`).join('');
+    }
+    function openEditor(id){
+      const v=volumes.find(x=>x.id===id);document.querySelector('#volume-form').reset();document.querySelector('#volume-form').dataset.issueLabel=v?.issue_label||'';document.querySelector('#chapters').innerHTML='';
+      document.querySelector('#volume-id').value=v?.id||'';document.querySelector('#editor-title').textContent=v?'Edit volume':'Add volume';
+      document.querySelector('#year').value=v?.year||new Date().getFullYear();document.querySelector('#number').value=v?.volume_number||'';
+      document.querySelector('#minutes').value=v?.reading_minutes||30;document.querySelector('#title').value=v?.title||'';
+      document.querySelector('#subtitle').value=v?.subtitle||'';document.querySelector('#description').value=v?.description||'';
+      refreshCategorySelect();
+      const category=normalizedCategory(v?.category||selectedCategory||'General');
+      if(!getCategories().some(c=>c.name===category))adminCategories.push({name:category,color:categoryColor(v?.cover_color)});
+      refreshCategorySelect();
+      document.querySelector('#category').value=category;
+      document.querySelector('#category-custom').value='';
+      document.querySelector('#cover-color').value=categoryColor(v?.cover_color||getCategories().find(c=>c.name===category)?.color);
+      syncCategoryColor();
+      document.querySelector('#published').checked=v?.published!==false;(v?.chapters?.length?v.chapters:[null]).forEach(addChapter);
+      document.querySelector('#pdf-file').value='';
+      document.querySelector('#pdf-layout').value=v?.pdf_layout||(v?.booklet_layout===true?'imposed':'single');updatePdfHelp();
+      document.querySelector('#pdf-status').textContent=v?.page_images?.length?`Current PDF edition: ${v.page_images.length} reading pages. Choose a new PDF only to replace it.`:'The PDF will be split and reordered for phone reading when you publish.';
+      setSourceMode(v?.page_images?.length?'pdf':'chapters');editor.showModal();
+    }
+    function setSourceMode(mode){
+      sourceMode=mode;
+      document.querySelector('#chapters-source').classList.toggle('hidden',mode!=='chapters');
+      document.querySelector('#pdf-source').classList.toggle('hidden',mode!=='pdf');
+      document.querySelector('#chapters-tab').classList.toggle('active',mode==='chapters');
+      document.querySelector('#pdf-tab').classList.toggle('active',mode==='pdf');
+    }
+    function updatePdfHelp(){
+      const layout=document.querySelector('#pdf-layout').value;
+      const messages={
+        single:'Choose this for a normal portrait PDF with one complete magazine page on each PDF page.',
+        single_trimmed:'Choose this for vinjanade.pdf: pages 1, 2, 3… are already ordered, rotation is corrected and the large white side margins are removed.',
+        imposed:'Choose this for vinjanadeepam.pdf: every PDF sheet contains two print-imposed pages such as 8–1 and 2–7.',
+        spreads:'Choose this when every PDF page shows two consecutive pages, such as 1–2, 3–4 and 5–6.'
+      };
+      document.querySelector('#pdf-layout-help').textContent=messages[layout];
+    }
+    function addChapter(chapter){
+      const node=document.querySelector('#chapter-template').content.cloneNode(true);
+      if(chapter){node.querySelector('.kicker').value=chapter.kicker||'അധ്യായം';node.querySelector('.chapter-title').value=chapter.title||'';node.querySelector('.paragraphs').value=(chapter.paragraphs||[]).join('\n\n')}
+      document.querySelector('#chapters').append(node);
+    }
+    document.querySelector('#volume-form').onsubmit=e=>{
+      e.preventDefault();
+      document.querySelector('#save-error').textContent='';
+      const chapters=[...document.querySelectorAll('.chapter')].map(c=>({kicker:c.querySelector('.kicker').value.trim()||'അധ്യായം',title:c.querySelector('.chapter-title').value.trim(),paragraphs:c.querySelector('.paragraphs').value.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean)})).filter(c=>c.title&&c.paragraphs.length);
+      const id=document.querySelector('#volume-id').value||'volume-'+Date.now();
+      const existing=volumes.find(v=>v.id===id);
+      const pdfFile=document.querySelector('#pdf-file').files[0];
+      if(sourceMode==='chapters'&&!chapters.length){document.querySelector('#save-error').textContent='Add at least one complete chapter, or select Upload booklet PDF.';return}
+      if(sourceMode==='pdf'&&!pdfFile&&!existing?.page_images?.length){document.querySelector('#save-error').textContent='Choose a PDF file.';return}
+      const pdfLayout=document.querySelector('#pdf-layout').value;
+      if(pdfFile)pendingPdfs.set(id,{file:pdfFile,layout:pdfLayout});
+      const selected=document.querySelector('#category').value;
+      const chosenCategory=selected==='__new__'?normalizedCategory(document.querySelector('#category-custom').value):normalizedCategory(selected);
+      if(selected==='__new__'&&!document.querySelector('#category-custom').value.trim()){document.querySelector('#save-error').textContent='Enter the new category name.';return}
+      const chosenColor=categoryColor(document.querySelector('#cover-color').value);
+      if(!getCategories().some(c=>c.name===chosenCategory))adminCategories.push({name:chosenCategory,color:chosenColor});
+      volumes=volumes.map(v=>normalizedCategory(v.category)===chosenCategory?{...v,cover_color:chosenColor}:v);
+      const payload={id,year:+document.querySelector('#year').value,volume_number:+document.querySelector('#number').value,title:document.querySelector('#title').value.trim(),subtitle:document.querySelector('#subtitle').value.trim(),description:document.querySelector('#description').value.trim(),reading_minutes:+document.querySelector('#minutes').value,chapters:sourceMode==='chapters'?chapters:(existing?.chapters||[]),category:chosenCategory,cover_color:chosenColor,published:document.querySelector('#published').checked,issue_label:document.querySelector('#volume-form').dataset.issueLabel||existing?.issue_label||''};
+      if(sourceMode==='pdf'){
+        payload.pdf_path=existing?.pdf_path||'';
+        payload.page_images=existing?.page_images||[];
+        payload.pdf_layout=pdfLayout;
+        payload.booklet_layout=pdfLayout==='imposed';
+      }
+      const index=volumes.findIndex(v=>v.id===id);if(index<0)volumes.push(payload);else volumes[index]=payload;
+      selectedCategory=chosenCategory;volumes.sort((a,b)=>b.year-a.year||b.volume_number-a.volume_number);editor.close();renderCategories();renderList();showMessage('Saved locally. Click “Publish to app” to update readers.','success');
+    };
+    function deleteVolume(id){if(!confirm('Delete this volume? The change is final only after publishing.'))return;volumes=volumes.filter(v=>v.id!==id);renderCategories();renderList();showMessage('Deleted locally. Publish to apply the change.','success')}
+    async function publishCatalog(){
+      const token=document.querySelector('#github-token').value.trim();if(!token){showMessage('Enter your GitHub access token.','error');return}
+      const button=document.querySelector('#publish-button');button.disabled=true;button.textContent='Publishing…';
+      try{
+        const headers={Accept:'application/vnd.github+json',Authorization:`Bearer ${token}`,'X-GitHub-Api-Version':'2022-11-28'};
+        const files=[];
+        for(const [id,pending] of pendingPdfs){
+          const volume=volumes.find(v=>v.id===id);if(!volume)continue;
+          showMessage(`Preparing ${volume.title} PDF…`,'success');
+          const pages=await renderPdfPages(pending.file,pending.layout);
+          files.push({path:`assets/books/${id}-original.pdf`,bytes:new Uint8Array(await pending.file.arrayBuffer())});
+          const pagePaths=[];
+          for(let i=0;i<pages.length;i++){
+            showMessage(`Preparing ${volume.title}: page ${i+1} of ${pages.length}…`,'success');
+            const path=`assets/books/${id}-page-${String(i+1).padStart(3,'0')}.jpg`;
+            files.push({path,bytes:new Uint8Array(await pages[i].arrayBuffer())});
+            pagePaths.push(path);
+          }
+          volume.pdf_path=`assets/books/${id}-original.pdf`;volume.page_images=pagePaths;volume.pdf_layout=pending.layout;volume.booklet_layout=pending.layout==='imposed';
+        }
+        files.push({path:catalogPath,bytes:new TextEncoder().encode(JSON.stringify(volumes,null,2)+'\n')});
+        files.push({path:categoryPath,bytes:new TextEncoder().encode(JSON.stringify(getCategories().map(({name,color})=>({name,color})),null,2)+'\n')});
+        showMessage(`Uploading ${files.length} files in one update…`,'success');
+        await publishFiles(files,headers);
+        pendingPdfs.clear();renderList();
+        showMessage('Published successfully. The reader is rebuilding; allow about two minutes.','success');
+      }catch(error){showMessage(error.message,'error')}finally{button.disabled=false;button.textContent='Publish to app'}
+    }
+    async function getPdfJs(){
+      if(!pdfJsPromise)pdfJsPromise=import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs').then(pdfjs=>{pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';return pdfjs});
+      return pdfJsPromise;
+    }
+    async function inspectPdfHeader(){
+      const file=document.querySelector('#pdf-file').files[0];
+      if(!file)return;
+      const status=document.querySelector('#pdf-status');
+      status.textContent='Reading cover data from the first page…';
+      try{
+        const pdfjs=await getPdfJs();
+        const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+        const firstPage=await pdf.getPage(1),content=await firstPage.getTextContent();
+        const header=content.items.map(item=>item.str||'').join(' ').replace(/\s+/g,' ').trim();
+        const serial=header.match(/Serial\s*(?:No\.?|Number)?\s*[-:.]?\s*(\d+)/i);
+        const issue=header.match(/\b(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\s+(19|20)\d{2}\b/i);
+        const year=issue?.[0].match(/\d{4}/)?.[0]||header.match(/\b(19|20)\d{2}\b/)?.[0];
+        if(serial){
+          document.querySelector('#number').value=serial[1];
+          document.querySelector('#title').value=`Serial No - ${serial[1]}`;
+        }
+        if(year)document.querySelector('#year').value=year;
+        if(issue)document.querySelector('#subtitle').value=issue[0].toUpperCase();
+        document.querySelector('#volume-form').dataset.issueLabel=issue?.[0]?.toUpperCase()||year||'';
+        document.querySelector('#minutes').value=Math.max(5,Math.ceil((pdf.numPages*(document.querySelector('#pdf-layout').value==='imposed'||document.querySelector('#pdf-layout').value==='spreads'?2:1))*3));
+        const found=[serial&&`Serial ${serial[1]}`,issue&&issue[0].toUpperCase()].filter(Boolean);
+        status.textContent=found.length?`Cover data found: ${found.join(' · ')}. You can edit the fields above before saving.`:'No standard date or serial number was found. Enter the cover fields manually.';
+      }catch(error){
+        status.textContent='The PDF header could not be read automatically. Enter the cover fields manually.';
+      }
+    }
+    async function renderPdfPages(file,layout){
+      const pdfjs=await getPdfJs();
+      const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+      const output=[];
+      if(layout==='imposed'){
+        const total=pdf.numPages*2,pageMap=new Map();
+        for(let sheet=0;sheet<pdf.numPages;sheet++){
+          const page=await pdf.getPage(sheet+1),base=page.getViewport({scale:1}),scale=2000/base.width,viewport=page.getViewport({scale});
+          const canvas=document.createElement('canvas');canvas.width=Math.round(viewport.width);canvas.height=Math.round(viewport.height);
+          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+          const half=Math.floor(canvas.width/2);
+          const numbers=sheet%2===0?[total-sheet,sheet+1]:[sheet+1,total-sheet];
+          for(let side=0;side<2;side++){
+            const part=document.createElement('canvas');part.width=half;part.height=canvas.height;
+            part.getContext('2d').drawImage(canvas,side*half,0,half,canvas.height,0,0,half,canvas.height);
+            pageMap.set(numbers[side],await canvasBlob(part));
+          }
+        }
+        for(let number=1;number<=total;number++)output.push(pageMap.get(number));
+      }else if(layout==='spreads'){
+        for(let index=1;index<=pdf.numPages;index++){
+          const page=await pdf.getPage(index),base=page.getViewport({scale:1}),scale=2000/base.width,viewport=page.getViewport({scale});
+          const canvas=document.createElement('canvas');canvas.width=Math.round(viewport.width);canvas.height=Math.round(viewport.height);
+          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+          const half=Math.floor(canvas.width/2);
+          for(let side=0;side<2;side++){
+            const part=document.createElement('canvas');part.width=half;part.height=canvas.height;
+            part.getContext('2d').drawImage(canvas,side*half,0,half,canvas.height,0,0,half,canvas.height);
+            output.push(await canvasBlob(part));
+          }
+        }
+      }else{
+        for(let index=1;index<=pdf.numPages;index++){
+          const page=await pdf.getPage(index),base=page.getViewport({scale:1}),viewport=page.getViewport({scale:1200/base.width});
+          const canvas=document.createElement('canvas');canvas.width=Math.round(viewport.width);canvas.height=Math.round(viewport.height);
+          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+          output.push(await canvasBlob(layout==='single_trimmed'?trimWhiteMargins(canvas):canvas));
+        }
+      }
+      return output;
+    }
+    function trimWhiteMargins(canvas){
+      const context=canvas.getContext('2d'),pixels=context.getImageData(0,0,canvas.width,canvas.height).data;
+      let left=canvas.width,right=0,top=canvas.height,bottom=0;
+      for(let y=0;y<canvas.height;y+=3){
+        for(let x=0;x<canvas.width;x+=3){
+          const offset=(y*canvas.width+x)*4;
+          if(pixels[offset]<245||pixels[offset+1]<245||pixels[offset+2]<245){
+            left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);
+          }
+        }
+      }
+      if(right<=left||bottom<=top)return canvas;
+      const padding=22;
+      left=Math.max(0,left-padding);top=Math.max(0,top-padding);
+      right=Math.min(canvas.width-1,right+padding);bottom=Math.min(canvas.height-1,bottom+padding);
+      const cropped=document.createElement('canvas');cropped.width=right-left+1;cropped.height=bottom-top+1;
+      cropped.getContext('2d').drawImage(canvas,left,top,cropped.width,cropped.height,0,0,cropped.width,cropped.height);
+      return cropped;
+    }
+    function canvasBlob(canvas){return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Could not prepare a PDF page.')),'image/jpeg',.86))}
+    async function publishFiles(files,headers){
+      const api=`https://api.github.com/repos/${owner}/${repo}`;
+      const request=async(url,options={})=>{
+        const response=await fetch(url,{...options,headers:{...headers,'Content-Type':'application/json',...(options.headers||{})}});
+        if(!response.ok){const detail=await response.json().catch(()=>({}));throw new Error(response.status===401?'GitHub token is invalid.':detail.message||'GitHub could not publish the update.')}
+        return response.json();
+      };
+      const ref=await request(`${api}/git/ref/heads/${branch}`);
+      const parent=ref.object.sha,commit=await request(`${api}/git/commits/${parent}`);
+      const tree=[];
+      for(let i=0;i<files.length;i++){
+        showMessage(`Uploading file ${i+1} of ${files.length}…`,'success');
+        const blob=await request(`${api}/git/blobs`,{method:'POST',body:JSON.stringify({content:bytesToBase64(files[i].bytes),encoding:'base64'})});
+        tree.push({path:files[i].path,mode:'100644',type:'blob',sha:blob.sha});
+      }
+      const nextTree=await request(`${api}/git/trees`,{method:'POST',body:JSON.stringify({base_tree:commit.tree.sha,tree})});
+      const nextCommit=await request(`${api}/git/commits`,{method:'POST',body:JSON.stringify({message:'Update magazine catalogue and PDF volumes',tree:nextTree.sha,parents:[parent]})});
+      await request(`${api}/git/refs/heads/${branch}`,{method:'PATCH',body:JSON.stringify({sha:nextCommit.sha,force:false})});
+    }
+    function bytesToBase64(bytes){
+      let binary='',size=0x8000;
+      for(let i=0;i<bytes.length;i+=size)binary+=String.fromCharCode(...bytes.subarray(i,i+size));
+      return btoa(binary);
+    }
+    function downloadCatalog(){const blob=new Blob([JSON.stringify(volumes,null,2)+'\n'],{type:'application/json'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='catalog.json';link.click();URL.revokeObjectURL(link.href)}
+    function showMessage(message,type){const box=document.querySelector('#publish-message');box.className=type;box.textContent=message}
+    function escapeHtml(value=''){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+    function escapeJs(value=''){return String(value).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+  </script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="The Vijnana Deepam annual magazine digital archive and reader.">
+  <meta name="theme-color" content="#08121D">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="vijnanadeepam">
+  <link rel="apple-touch-icon" href="icons/vijnanadeepam-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="vijnanadeepam-favicon.png"/>
+
+  <title>Vijnana Deepam</title>
+  <link rel="manifest" href="manifest.json?v=__BUILD_VERSION__">
+  <style>
+    #install-card {
+      position: fixed;
+      z-index: 999999;
+      left: 14px;
+      right: 14px;
+      bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 13px;
+      color: #fff;
+      background: #17202a;
+      border: 1px solid rgba(229, 196, 119, .35);
+      border-radius: 14px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, .45);
+      font-family: system-ui, sans-serif;
+    }
+    #install-card img { width: 42px; height: 42px; border-radius: 9px; }
+    #install-copy { min-width: 0; flex: 1; }
+    #install-copy strong { display: block; font-size: 14px; }
+    #install-copy span { display: block; margin-top: 2px; color: #b7bec6; font-size: 11px; }
+    #install-action, #install-close {
+      border: 0;
+      color: #fff;
+      cursor: pointer;
+      font: 700 12px system-ui, sans-serif;
+    }
+    #install-action { padding: 9px 12px; background: #168ddd; border-radius: 9px; }
+    #install-close { padding: 8px 4px; background: transparent; color: #aab2bb; font-size: 18px; }
+    @media (min-width: 600px) {
+      #install-card { left: auto; width: 390px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="install-card" role="dialog" aria-label="Install Vijnana Deepam">
+    <img src="icons/vijnanadeepam-192.png" alt="">
+    <div id="install-copy">
+      <strong>Install വിജ്ഞാന ദീപം</strong>
+      <span>Read volumes from your phone home screen.</span>
+    </div>
+    <button id="install-action" type="button">Install</button>
+    <button id="install-close" type="button" aria-label="Close">×</button>
+  </div>
+  <script>
+    (function () {
+      const seenKey = 'vijnanadeepam-install-offer-seen';
+      const standalone = window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone === true;
+      if (standalone || localStorage.getItem(seenKey)) return;
+
+      let installPrompt = null;
+      const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+      const card = document.getElementById('install-card');
+      const action = document.getElementById('install-action');
+      const close = document.getElementById('install-close');
+      const copy = document.querySelector('#install-copy span');
+
+      if (isIos) {
+        action.textContent = 'How to install';
+        copy.textContent = 'In Safari, tap Share → Add to Home Screen.';
+      }
+
+      function rememberAndHide() {
+        localStorage.setItem(seenKey, 'true');
+        card.style.display = 'none';
+      }
+
+      window.addEventListener('beforeinstallprompt', function (event) {
+        event.preventDefault();
+        installPrompt = event;
+        action.textContent = 'Install';
+      });
+
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          if (!localStorage.getItem(seenKey)) card.style.display = 'flex';
+        }, 1800);
+      });
+
+      action.addEventListener('click', async function () {
+        if (installPrompt) {
+          installPrompt.prompt();
+          await installPrompt.userChoice;
+          installPrompt = null;
+        } else if (isIos) {
+          alert('On iPhone or iPad: open this website in Safari, tap the Share button, then choose “Add to Home Screen”.');
+        } else {
+          alert('On Android: open the browser menu and choose “Install app” or “Add to Home screen”.');
+        }
+        rememberAndHide();
+      });
+      close.addEventListener('click', rememberAndHide);
+      window.addEventListener('appinstalled', rememberAndHide);
+    })();
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (!sessionStorage.getItem('update-reloaded')) {
+          sessionStorage.setItem('update-reloaded', 'true');
+          window.location.reload();
+        }
+      });
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register(
+          'update-worker.js?v=__BUILD_VERSION__'
+        ).then(function (registration) {
+          registration.update();
+        });
+      });
+    }
+  </script>
+  <script src="flutter_bootstrap.js?v=__BUILD_VERSION__"></script>
+</body>
+</html>

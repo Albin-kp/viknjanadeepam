@@ -1,0 +1,35 @@
+{
+    "name": "വിജ്ഞാന ദീപം",
+    "short_name": "വിജ്ഞാന ദീപം",
+    "start_url": ".?app=__BUILD_VERSION__",
+    "display": "standalone",
+    "background_color": "#08121D",
+    "theme_color": "#08121D",
+    "description": "The Vijnana Deepam Jacobite Christian history magazine archive.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/vijnanadeepam-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/vijnanadeepam-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/vijnanadeepam-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/vijnanadeepam-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
