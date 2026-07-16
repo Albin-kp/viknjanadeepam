@@ -27,6 +27,33 @@
     "booklet_layout": true
   },
   {
+    "id": "volume-1784213308031",
+    "year": 2026,
+    "volume_number": 42,
+    "title": "Serial No - 42",
+    "subtitle": "",
+    "description": "",
+    "reading_minutes": 24,
+    "chapters": [],
+    "category": "സത്യവിശ്വാസം",
+    "cover_color": "#276749",
+    "published": true,
+    "issue_label": "",
+    "pdf_path": "assets/books/volume-1784213308031-original.pdf",
+    "page_images": [
+      "assets/books/volume-1784213308031-page-001.jpg",
+      "assets/books/volume-1784213308031-page-002.jpg",
+      "assets/books/volume-1784213308031-page-003.jpg",
+      "assets/books/volume-1784213308031-page-004.jpg",
+      "assets/books/volume-1784213308031-page-005.jpg",
+      "assets/books/volume-1784213308031-page-006.jpg",
+      "assets/books/volume-1784213308031-page-007.jpg",
+      "assets/books/volume-1784213308031-page-008.jpg"
+    ],
+    "pdf_layout": "single",
+    "booklet_layout": false
+  },
+  {
     "id": "volume-1784213222522",
     "year": 2026,
     "volume_number": 41,
@@ -49,6 +76,33 @@
       "assets/books/volume-1784213222522-page-006.jpg",
       "assets/books/volume-1784213222522-page-007.jpg",
       "assets/books/volume-1784213222522-page-008.jpg"
+    ],
+    "pdf_layout": "single",
+    "booklet_layout": false
+  },
+  {
+    "id": "volume-1784213330112",
+    "year": 2026,
+    "volume_number": 40,
+    "title": "Serial No - 40",
+    "subtitle": "",
+    "description": "",
+    "reading_minutes": 24,
+    "chapters": [],
+    "category": "സത്യവിശ്വാസം",
+    "cover_color": "#276749",
+    "published": true,
+    "issue_label": "",
+    "pdf_path": "assets/books/volume-1784213330112-original.pdf",
+    "page_images": [
+      "assets/books/volume-1784213330112-page-001.jpg",
+      "assets/books/volume-1784213330112-page-002.jpg",
+      "assets/books/volume-1784213330112-page-003.jpg",
+      "assets/books/volume-1784213330112-page-004.jpg",
+      "assets/books/volume-1784213330112-page-005.jpg",
+      "assets/books/volume-1784213330112-page-006.jpg",
+      "assets/books/volume-1784213330112-page-007.jpg",
+      "assets/books/volume-1784213330112-page-008.jpg"
     ],
     "pdf_layout": "single",
     "booklet_layout": false
