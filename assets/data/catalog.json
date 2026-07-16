@@ -528,5 +528,32 @@
     ],
     "pdf_layout": "single",
     "booklet_layout": false
+  },
+  {
+    "id": "volume-1784215665271",
+    "year": 2013,
+    "volume_number": 21,
+    "title": "Serial No - 21",
+    "subtitle": "October",
+    "description": "",
+    "reading_minutes": 24,
+    "chapters": [],
+    "category": "വേദജ്ഞാനം",
+    "cover_color": "#9b2c2c",
+    "published": true,
+    "issue_label": "",
+    "pdf_path": "assets/books/volume-1784215665271-original.pdf",
+    "page_images": [
+      "assets/books/volume-1784215665271-page-001.jpg",
+      "assets/books/volume-1784215665271-page-002.jpg",
+      "assets/books/volume-1784215665271-page-003.jpg",
+      "assets/books/volume-1784215665271-page-004.jpg",
+      "assets/books/volume-1784215665271-page-005.jpg",
+      "assets/books/volume-1784215665271-page-006.jpg",
+      "assets/books/volume-1784215665271-page-007.jpg",
+      "assets/books/volume-1784215665271-page-008.jpg"
+    ],
+    "pdf_layout": "single",
+    "booklet_layout": false
   }
 ]
